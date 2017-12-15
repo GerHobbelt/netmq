@@ -277,6 +277,21 @@ namespace NetMQ.Core
         RouterHandover = 48,
 
         /// <summary>
+        ///  服务端响应完是否主动关闭连接,默认为false。不主动关闭。
+        /// </summary>
+        ProactiveCloseConnect = 49,
+
+
+        /// <summary>
+        /// The local endpoint bound for TCP and IPC transports.
+        /// The returned value will be a string in the form of a ZMQ DSN.
+        /// </summary>
+        /// <remarks>
+        /// If the TCP host is ANY, indicated by a *, then the returned address
+        /// will be 0.0.0.0 (for IPv4).
+        /// </remarks>
+        LocalEndpoint = 50,
+        /// <summary>
         /// Specifies the byte-order: big-endian, vs little-endian.
         /// </summary>
         Endian = 1000,

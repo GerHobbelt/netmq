@@ -22,6 +22,8 @@
 using System;
 using JetBrains.Annotations;
 using NetMQ.Core.Utils;
+using NetMQ.Core;
+using System.Net;
 
 namespace NetMQ
 {
@@ -91,6 +93,11 @@ namespace NetMQ
         /// relative to the start of the original array.
         /// </summary>
         public int Offset { get; private set; }
+
+        /// <summary>
+        /// ∂‘∂Àµÿ÷∑
+        /// </summary>
+        public IPEndPoint Address { get; private set; }
 
         #region MsgType
 
@@ -229,7 +236,10 @@ namespace NetMQ
         }
 
         #endregion
-
+        internal void SetAddress(IPEndPoint address)
+        {
+            Address = address;
+        }
         /// <summary>
         /// Clear the <see cref="Data"/> and set the MsgType to Invalid.
         /// If this is not a shared-data Msg (MsgFlags.Shared is not set), or it is shared but the reference-counter has dropped to zero,

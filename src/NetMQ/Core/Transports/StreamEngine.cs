@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using AsyncIO;
 using JetBrains.Annotations;
+using System.Net;
 
 namespace NetMQ.Core.Transports
 {
@@ -100,6 +101,20 @@ namespace NetMQ.Core.Transports
         //private IOObject io_object;
         private AsyncSocket m_handle;
 
+        /// <summary>
+        /// 本地地址
+        /// </summary>
+        public IPEndPoint LocalEndPoint
+        {
+            get { return m_handle.LocalEndPoint; }
+        }
+        /// <summary>
+        /// 对端地址
+        /// </summary>
+        public IPEndPoint RemotEndPoint
+        {
+            get { return m_handle.RemoteEndPoint; }
+        }
         private ByteArraySegment m_inpos;
         private int m_insize;
         private DecoderBase m_decoder;
@@ -243,14 +258,20 @@ namespace NetMQ.Core.Transports
             m_decoder?.SetMsgSink(null);
             m_session = null;
         }
-
-        private void Error()
+        /// <summary>
+        /// 向外面暴露关闭，服务端可以主动关闭和客户端之间的连接
+        /// </summary>
+        public void Disconnect()
         {
             Debug.Assert(m_session != null);
             m_socket.EventDisconnected(m_endpoint, m_handle);
             m_session.Detach();
             Unplug();
             Destroy();
+        }
+        private void Error()
+        {
+            Disconnect();
         }
 
         private void FeedAction(Action action, SocketError socketError, int bytesTransferred)
@@ -330,6 +351,17 @@ namespace NetMQ.Core.Transports
                                 m_outsize -= bytesSent;
 
                                 BeginSending();
+                                if (m_sendingState == SendState.Idle)
+                                {
+                                    //发送完成时
+                                    //作为服务端时，发送完毕，若需要主动关闭连接，则调用关闭连接。
+                                    if (!m_session.IsClientConnectSession &&
+                                        m_options.ProactiveCloseConnect)
+                                    {
+                                        this.Disconnect();
+                                    }
+                                }
+
                             }
                             break;
                         case Action.ActivateOut:

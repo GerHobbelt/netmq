@@ -255,6 +255,11 @@ namespace NetMQ
         public string LastEndpoint => m_socket.GetSocketOptionX<string>(ZmqSocketOption.LastEndpoint);
 
         /// <summary>
+        /// 本地端口
+        /// </summary>
+        [CanBeNull]
+        public string LocalEndpoint => m_socket.GetSocketOptionX<string>(ZmqSocketOption.LocalEndpoint);
+        /// <summary>
         /// Set the RouterSocket behavior when an unroutable message is encountered.
         /// A value of false is the default and discards the message silently when it cannot be routed.
         /// A value of true causes throw of HostUnreachableException if the message cannot be routed.
@@ -391,6 +396,14 @@ namespace NetMQ
         {
             get => m_socket.GetSocketOptionX<int>(ZmqSocketOption.PgmMaxTransportServiceDataUnitLength);
             set => m_socket.SetSocketOption(ZmqSocketOption.PgmMaxTransportServiceDataUnitLength, value);
+        }
+        /// <summary>
+        /// 服务端响应完是否主动关闭连接,默认为false。不主动关闭。
+        /// </summary>
+        public bool ProactiveCloseConnect
+        {
+            get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.ProactiveCloseConnect);
+            set => m_socket.SetSocketOption(ZmqSocketOption.ProactiveCloseConnect, value);
         }
     }
 }

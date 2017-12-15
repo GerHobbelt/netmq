@@ -129,6 +129,13 @@ namespace NetMQ.Core
         /// </summary>
         public string LastEndpoint { get; set; }
 
+
+        /// <summary>
+        /// Get or set the local socket endpoint resolved URI
+        /// The initial value is null.
+        /// </summary>
+        public string LocalEndpoint { get; set; }
+
         /// <summary>
         /// Get or set the Linger time, in milliseconds.
         /// The default value is -1; The XSub ctor sets this to 0.
@@ -269,6 +276,14 @@ namespace NetMQ.Core
         /// </summary>
         public int PgmMaxTransportServiceDataUnitLength { get; set; }
 
+
+        /// <summary>
+        /// 服务端响应完是否主动关闭连接,默认为false。不主动关闭。
+        /// </summary>
+        public bool ProactiveCloseConnect { get; set; }
+        
+
+
         /// <summary>
         /// Assign the given optionValue to the specified option.
         /// </summary>
@@ -401,6 +416,12 @@ namespace NetMQ.Core
                     PgmMaxTransportServiceDataUnitLength = (int)optionValue;
                     break;
 
+                case ZmqSocketOption.ProactiveCloseConnect:
+                    ProactiveCloseConnect = (bool)optionValue;
+                    break;
+                case ZmqSocketOption.LocalEndpoint:
+                    LocalEndpoint = (string)optionValue;
+                    break;
                 default:
                     throw new InvalidException("Options.SetSocketOption called with invalid ZmqSocketOption of " + option);
             }
@@ -493,6 +514,11 @@ namespace NetMQ.Core
 
                 case ZmqSocketOption.DisableTimeWait:
                     return DisableTimeWait;
+                case ZmqSocketOption.ProactiveCloseConnect:
+                    return ProactiveCloseConnect;
+                case ZmqSocketOption.LocalEndpoint:
+                    return LocalEndpoint;
+
 
                 default:
                     throw new InvalidException("GetSocketOption called with invalid ZmqSocketOption of " + option);

@@ -21,6 +21,7 @@
 */
 
 using JetBrains.Annotations;
+using System.Net;
 
 namespace NetMQ.Core.Transports
 {
@@ -29,6 +30,14 @@ namespace NetMQ.Core.Transports
     /// </summary>
     internal interface IEngine
     {
+        /// <summary>
+        /// 本地地址
+        /// </summary>
+        IPEndPoint LocalEndPoint { get; }
+        /// <summary>
+        /// 对端地址
+        /// </summary>
+        IPEndPoint RemotEndPoint { get; }
         /// <summary>
         /// Plug the engine to the session.
         /// </summary>

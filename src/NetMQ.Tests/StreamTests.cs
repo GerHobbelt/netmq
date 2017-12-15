@@ -37,5 +37,6 @@ namespace NetMQ.Tests
                 Assert.Equal(response, client.ReceiveFrameString());
             }
         }
+
     }
 }

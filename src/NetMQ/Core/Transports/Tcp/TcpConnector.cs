@@ -196,6 +196,8 @@ namespace NetMQ.Core.Transports.Tcp
             try
             {
                 m_s.Connect(m_addr.Resolved.Address.Address, m_addr.Resolved.Address.Port);
+                //设置下本地的地址
+                m_socket.SetSocketOption(ZmqSocketOption.LocalEndpoint, m_s.LocalEndPoint.ToString());
                 m_socket.EventConnectDelayed(m_endpoint, ErrorCode.InProgress);
             }
             catch (SocketException ex)

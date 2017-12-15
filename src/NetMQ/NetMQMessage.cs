@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
+using NetMQ.Core;
+using System.Net;
 
 namespace NetMQ
 {
@@ -71,6 +73,10 @@ namespace NetMQ
 
         #region Properties
 
+        /// <summary>
+        /// 服务端接收到的报文获取到的客户端的地址
+        /// </summary>
+        public IPEndPoint Address { get; private set; }
         /// <summary>
         /// Gets the first frame in the current message.
         /// </summary>
@@ -308,7 +314,10 @@ namespace NetMQ
         {
             m_frames.Clear();
         }
-
+        internal void SetAddress(IPEndPoint address)
+        {
+            Address = address;
+        }
         #region IEnumerable
 
         /// <summary>

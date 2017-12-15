@@ -42,6 +42,20 @@ namespace NetMQ.Core.Transports.Pgm
         private SessionBase m_session;
         private int m_currentReconnectIvl;
 
+        /// <summary>
+        /// 本地地址
+        /// </summary>
+        public IPEndPoint LocalEndPoint
+        {
+            get { return m_socket.LocalEndPoint; }
+        }
+        /// <summary>
+        /// 对端地址
+        /// </summary>
+        public IPEndPoint RemotEndPoint
+        {
+            get { return m_socket.RemoteEndPoint; }
+        }
         public PgmSender([NotNull] IOThread ioThread, [NotNull] Options options, [NotNull] Address addr, bool delayedStart)
             : base(ioThread)
         {

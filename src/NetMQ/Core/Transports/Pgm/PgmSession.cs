@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using AsyncIO;
 using JetBrains.Annotations;
+using System.Net;
 
 namespace NetMQ.Core.Transports.Pgm
 {
@@ -31,6 +32,20 @@ namespace NetMQ.Core.Transports.Pgm
         }
 
         private State m_state;
+        /// <summary>
+        /// 本地地址
+        /// </summary>
+        public IPEndPoint LocalEndPoint
+        {
+            get { return m_handle.LocalEndPoint; }
+        }
+        /// <summary>
+        /// 对端地址
+        /// </summary>
+        public IPEndPoint RemotEndPoint
+        {
+            get { return m_handle.RemoteEndPoint; }
+        }
 
         public PgmSession([NotNull] PgmSocket pgmSocket, [NotNull] Options options)
         {

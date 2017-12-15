@@ -25,8 +25,9 @@ namespace NetMQ.Core
 {
     /// <summary>
     /// Class Address contains a specification of a protocol and an MqEndPoint.
+    /// 地址让外部可访问到
     /// </summary>
-    internal sealed class Address
+    public sealed class Address
     {
         /// <summary>
         /// The string-literal "inproc"

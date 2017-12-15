@@ -44,6 +44,11 @@ namespace NetMQ.Core
         private readonly bool m_connect;
 
         /// <summary>
+        /// If true, this session (re)connects to the peer. Otherwise, it's
+        /// a transient session created by the listener.
+        /// </summary>
+        public bool IsClientConnectSession { get { return m_connect; } }
+        /// <summary>
         /// Pipe connecting the session to its socket.
         /// </summary>
         private Pipe m_pipe;
@@ -261,7 +266,7 @@ namespace NetMQ.Core
                     return true;
                 }
             }
-
+            msg.SetAddress(m_engine.RemotEndPoint);
             if (m_pipe != null && m_pipe.Write(ref msg))
             {
                 msg.InitEmpty();

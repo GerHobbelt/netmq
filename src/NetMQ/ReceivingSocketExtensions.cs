@@ -636,7 +636,7 @@ namespace NetMQ
                 message.Append(msg.CloneData());
             }
             while (msg.HasMore);
-
+            message.SetAddress(msg.Address);
             msg.Close();
             return message;
         }
@@ -702,7 +702,7 @@ namespace NetMQ
                 socket.Receive(ref msg);
                 message.Append(new NetMQFrame(msg.CloneData()));
             }
-
+            message.SetAddress(msg.Address);
             msg.Close();
             return true;
         }

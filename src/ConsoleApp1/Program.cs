@@ -10,78 +10,6 @@ namespace ConsoleApp1
 {
     class Program
     {
-        /// <summary>
-        /// 服务端获取客户端的地址
-        /// </summary>
-
-        public static void GetClientAddressTest()
-        {
-            using (var server = new StreamSocket())
-            using (var client = new StreamSocket())
-            {
-                var port = server.BindRandomPort("tcp://*");
-                client.Connect("tcp://127.0.0.1:" + port);
-
-                byte[] clientId = client.Options.Identity;
-
-                const string request = "GET /\r\n";
-
-                const string response = "HTTP/1.0 200 OK\r\n" +
-                        "Content-Type: text/plain\r\n" +
-                        "\r\n" +
-                        "Hello, World!";
-
-                client.SendMoreFrame(clientId).SendFrame(request);
-
-                NetMQMessage reqMessage = server.ReceiveMultipartMessage();
-                Debug.Assert(reqMessage.Address.ToString() == client.Options.LocalEndpoint);
-
-                Debug.Assert(request == reqMessage.Last.ConvertToString());
-
-                server.SendMoreFrame(reqMessage.First.Buffer).SendFrame(response);
-
-                Debug.Assert(clientId == client.ReceiveFrameBytes());
-                Debug.Assert(response == client.ReceiveFrameString());
-            }
-        }
-
-        /// <summary>
-        /// 主动关闭连接测试
-        /// </summary>
-
-        public static async void ProactiveCloseConnect()
-        {
-            var server = new StreamSocket();
-            //响应客户端完成时主动关闭连接
-            server.Options.ProactiveCloseConnect = true;
-            var port = 10010;
-            server.Bind("tcp://*:" + port);
-            using (var client = new StreamSocket())
-            {
-                client.Connect("tcp://127.0.0.1:" + port);
-
-                byte[] clientId = client.Options.Identity;
-
-                const string request = "GET /\r\n";
-
-                const string response = "HTTP/1.0 200 OK\r\n" +
-                        "Content-Type: text/plain\r\n" +
-                        "\r\n" +
-                        "Hello, World!";
-
-                client.SendMoreFrame(clientId).SendFrame(request);
-
-                NetMQMessage reqMessage = server.ReceiveMultipartMessage();
-                Debug.Assert(reqMessage.Address.ToString() == client.Options.LocalEndpoint);
-
-                Debug.Assert(request == reqMessage.Last.ConvertToString());
-
-                server.SendMoreFrame(reqMessage.First.Buffer).SendFrame(response);
-
-                Thread.Sleep(20000);
-                client.Disconnect("tcp://127.0.0.1:" + port);
-            }
-        }
         private static  void CreateClient()
         {
             while (true)
@@ -130,8 +58,6 @@ namespace ConsoleApp1
 
         private static void Main(string[] args)
         {
-            //GetClientAddressTest();
-            ProactiveCloseConnect();
             //因为identity是内部生成的，第一部分是identity，第二部分是报文内容
 
             for (int i = 0; i < 200; i++)

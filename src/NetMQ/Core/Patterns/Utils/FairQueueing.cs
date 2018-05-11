@@ -98,7 +98,7 @@ namespace NetMQ.Core.Patterns.Utils
             return RecvPipe(null, ref msg);
         }
 
-        public bool RecvPipe(Pipe[] pipe, ref Msg msg)
+        public bool RecvPipe(Pipe[] pipe, ref Msg msg, bool throwDelimiter = false)
         {
             // Deallocate old content of the message.
             msg.Close();
@@ -109,7 +109,7 @@ namespace NetMQ.Core.Patterns.Utils
 
                 // Try to fetch new message. If we've already read part of the message
                 // subsequent part should be immediately available.
-                bool fetched = m_pipes[m_current].Read(ref msg);
+                bool fetched = m_pipes[m_current].Read(ref msg,throwDelimiter);
 
                 // Note that when message is not fetched, current pipe is deactivated
                 // and replaced by another active pipe. Thus we don't have to increase

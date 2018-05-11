@@ -25,9 +25,10 @@
 	<IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyVersion>4.0.0.2</AssemblyVersion>
-    <FileVersion>4.0.0.2</FileVersion>
-    <Version>4.0.0.2</Version>
+    <AssemblyVersion>4.0.0.4</AssemblyVersion>
+    <FileVersion>4.0.0.4</FileVersion>
+    <Version>4.0.0.4</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'uap10.0'">

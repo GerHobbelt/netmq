@@ -300,8 +300,18 @@ namespace NetMQ.Core.Patterns
 
             var pipe = new Pipe[1];
 
-            bool isMessageAvailable = m_fairQueueing.RecvPipe(pipe, ref m_prefetchedMsg);
+            bool isMessageAvailable = m_fairQueueing.RecvPipe(pipe, ref m_prefetchedMsg,m_options.ThrowDelimiter);
 
+            if (m_prefetchedMsg.IsDelimiter)
+            {
+                msg = m_prefetchedMsg;
+                //加上identity
+                msg.InitPool(pipe[0].Identity.Length);
+                msg.Put(pipe[0].Identity, 0, pipe[0].Identity.Length);
+                msg.InitDelimiter();
+                //让上层知道连接断了
+                return true;
+            }
             if (!isMessageAvailable)
             {
                 return false;
@@ -336,6 +346,11 @@ namespace NetMQ.Core.Patterns
 
             bool isMessageAvailable = m_fairQueueing.RecvPipe(pipe, ref m_prefetchedMsg);
 
+            if (m_prefetchedMsg.IsDelimiter)
+            {
+                //让上层知道连接断了
+                return true;
+            }
             if (!isMessageAvailable)
             {
                 return false;

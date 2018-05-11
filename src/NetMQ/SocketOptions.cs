@@ -390,6 +390,15 @@ namespace NetMQ
         }
 
         /// <summary>
+        /// delimiter消息是否上抛
+        /// </summary>
+        public bool ThrowDelimiter
+        {
+            get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.ThrowDelimiter);
+            set => m_socket.SetSocketOption(ZmqSocketOption.ThrowDelimiter, value);
+        }
+
+        /// <summary>
         /// Controls the maximum datagram size for PGM.
         /// </summary>
         public int PgmMaxTransportServiceDataUnitLength

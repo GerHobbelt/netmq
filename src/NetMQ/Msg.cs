@@ -251,7 +251,8 @@ namespace NetMQ
             if (!IsInitialised)
                 throw new FaultException("Cannot close an uninitialised Msg.");
 
-            if (MsgType == MsgType.Pool)
+            if (MsgType == MsgType.Pool ||
+                (MsgType == MsgType.Delimiter && Data != null/*当配置了ThrowDelimiter时,Msg也会有数据，也需要释放。*/))
             {
                 // if not shared or reference counter drop to zero
                 if (!IsShared || m_refCount.Decrement() == 0)
@@ -259,7 +260,6 @@ namespace NetMQ
 
                 m_refCount = null;
             }
-
             // Uninitialise the frame
             Data = null;
             MsgType = MsgType.Uninitialised;

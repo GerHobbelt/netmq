@@ -633,6 +633,11 @@ namespace NetMQ
             do
             {
                 socket.Receive(ref msg);
+                if (msg.IsDelimiter)
+                {
+                    message.SetClear();
+                    message.Append(msg.CloneData());
+                }
                 message.Append(msg.CloneData());
             }
             while (msg.HasMore);
@@ -692,9 +697,15 @@ namespace NetMQ
                 message = new NetMQMessage(expectedFrameCount);
             else
                 message.Clear();
-
-            // Add the frame
-            message.Append(new NetMQFrame(msg.CloneData()));
+            if (msg.IsDelimiter)
+            {
+                message.SetClear();
+            }
+            else
+            {
+                // Add the frame
+                message.Append(new NetMQFrame(msg.CloneData()));
+            }
 
             // Rinse and repeat...
             while (msg.HasMore)

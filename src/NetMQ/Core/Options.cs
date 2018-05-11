@@ -135,7 +135,7 @@ namespace NetMQ.Core
         /// The initial value is null.
         /// </summary>
         public string LocalEndpoint { get; set; }
-
+        
         /// <summary>
         /// Get or set the Linger time, in milliseconds.
         /// The default value is -1; The XSub ctor sets this to 0.
@@ -281,8 +281,14 @@ namespace NetMQ.Core
         /// 服务端响应完是否主动关闭连接,默认为false。不主动关闭。
         /// </summary>
         public bool ProactiveCloseConnect { get; set; }
-        
 
+
+
+        /// <summary>
+        /// Get or set the socket disconnected need notice upward
+        /// The initial value is false.
+        /// </summary>
+        public bool ThrowDelimiter { get; set; }
 
         /// <summary>
         /// Assign the given optionValue to the specified option.
@@ -421,6 +427,9 @@ namespace NetMQ.Core
                     break;
                 case ZmqSocketOption.LocalEndpoint:
                     LocalEndpoint = (string)optionValue;
+                    break;
+                case ZmqSocketOption.ThrowDelimiter:
+                    ThrowDelimiter = (bool)optionValue;
                     break;
                 default:
                     throw new InvalidException("Options.SetSocketOption called with invalid ZmqSocketOption of " + option);

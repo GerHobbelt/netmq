@@ -78,6 +78,10 @@ namespace NetMQ
         /// </summary>
         public IPEndPoint Address { get; private set; }
         /// <summary>
+        /// 指令类型
+        /// </summary>
+        public NetMQMessageCommondType CommondType { get; private set; }
+        /// <summary>
         /// Gets the first frame in the current message.
         /// </summary>
         [NotNull]
@@ -318,6 +322,19 @@ namespace NetMQ
         {
             Address = address;
         }
+        /// <summary>
+        /// 设置错误
+        /// </summary>
+        /// <param name="errorInfo"></param>
+        public void SetError(string errorInfo)
+        {
+            CommondType = NetMQMessageCommondType.Error ;
+            this.Append(errorInfo);
+        }
+        internal void SetClear()
+        {
+            CommondType = NetMQMessageCommondType.Clear;
+        }
         #region IEnumerable
 
         /// <summary>
@@ -361,6 +378,7 @@ namespace NetMQ
             }
             return sb.Append("]").ToString();
         }
+
 
         #endregion
     }

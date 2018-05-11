@@ -56,17 +56,46 @@ namespace ConsoleApp1
             return c;
         }
 
+        public static void StreamToStream()
+        {
+            using (var server = new StreamSocket())
+            {
+                using (var client = new StreamSocket())
+                {
+                    var port = server.BindRandomPort("tcp://*");
+                    client.Connect("tcp://127.0.0.1:" + port);
+
+                    byte[] clientId = client.Options.Identity;
+
+                    const string request = "GET /\r\n";
+
+                    const string response = "HTTP/1.0 200 OK\r\n" +
+                        "Content-Type: text/plain\r\n" +
+                        "\r\n" +
+                        "Hello, World!";
+
+                    client.SendMoreFrame(clientId).SendFrame(request);
+
+                    byte[] serverId = server.ReceiveFrameBytes();
+                    var a = server.ReceiveFrameString();
+                    server.SendMoreFrame(serverId).SendFrame(response);
+                    var b = client.ReceiveFrameBytes();
+                    var c = client.ReceiveFrameString();
+                }
+                var message = server.ReceiveMultipartMessage();
+            }
+        }
         private static void Main(string[] args)
         {
+            StreamToStream();
             //因为identity是内部生成的，第一部分是identity，第二部分是报文内容
 
-            for (int i = 0; i < 200; i++)
-            {
-                Thread thread = new Thread(CreateClient);
-                thread.IsBackground = true;
-                thread.Start();
-            }
-
+            //for (int i = 0; i < 200; i++)
+            //{
+            //    Thread thread = new Thread(CreateClient);
+            //    thread.IsBackground = true;
+            //    thread.Start();
+            //}
 
             //message = new NetMQMessage();
             //message.Append(message3.First);

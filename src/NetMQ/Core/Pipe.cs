@@ -265,8 +265,9 @@ namespace NetMQ.Core
         /// <summary>
         /// Read a message from the underlying inbound pipe, and write it to the provided Msg argument.
         /// </summary>
+        /// <param name="throwDelimiter">delimiter是否通知上层</param>
         /// <returns>true if a message is read from the pipe, false if pipe is terminated or no messages are available</returns>
-        public bool Read(ref Msg msg)
+        public bool Read(ref Msg msg, bool throwDelimiter = false)
         {
             if (!m_inActive || (m_state != State.Active && m_state != State.Pending))
                 return false;
@@ -281,7 +282,7 @@ namespace NetMQ.Core
             if (msg.IsDelimiter)
             {
                 Delimit();
-                return false;
+                return throwDelimiter;
             }
 
             if (!msg.HasMore)

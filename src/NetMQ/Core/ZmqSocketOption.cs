@@ -292,6 +292,10 @@ namespace NetMQ.Core
         /// </remarks>
         LocalEndpoint = 50,
         /// <summary>
+        /// 管道关闭是否上抛到外面。当连接断开时，管道关闭向上通知。。
+        /// </remarks>
+        ThrowDelimiter = 51,
+        /// <summary>
         /// Specifies the byte-order: big-endian, vs little-endian.
         /// </summary>
         Endian = 1000,

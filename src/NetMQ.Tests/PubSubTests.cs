@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Threading;
 using NetMQ.Sockets;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
-    public class PubSubTests : IClassFixture<CleanupAfterFixture>
+    public class PubSubTests 
     {
         public PubSubTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void TopicPubSub()
         {
             using (var pub = new PublisherSocket())
@@ -25,13 +25,13 @@ namespace NetMQ.Tests
 
                 pub.SendMoreFrame("A").SendFrame("Hello");
 
-                Assert.Equal(
+                 Assert.AreEqual(
                     new[] {"A", "Hello"},
                     sub.ReceiveMultipartStrings());
             }
         }
 
-        [Fact]
+        [Test]
         public void SimplePubSub()
         {
             using (var pub = new PublisherSocket())
@@ -47,13 +47,13 @@ namespace NetMQ.Tests
                 // Send the topic only
                 pub.SendFrame("A");
 
-                Assert.Equal(
+                 Assert.AreEqual(
                     new[] { "A" },
                     sub.ReceiveMultipartStrings());
             }
         }
 
-        [Fact]
+        [Test]
         public void NotSubscribed()
         {
             using (var pub = new PublisherSocket())
@@ -74,7 +74,7 @@ namespace NetMQ.Tests
         /// <summary>
         /// This test trying to reproduce issue #45 NetMQ.zmq.Utils.Realloc broken!
         /// </summary>
-        [Fact]
+        [Test]
         public void MultipleSubscriptions()
         {
             using (var pub = new PublisherSocket())
@@ -100,7 +100,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void MultipleSubscribersOnDifferentTopics()
         {
             using (var pub = new PublisherSocket())
@@ -122,22 +122,22 @@ namespace NetMQ.Tests
 
                 pub.SendMoreFrame("1").SendFrame("A");
 
-                Assert.Equal(new[] { "1", "A" }, sub1.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "1", "A" }, sub1.ReceiveMultipartStrings());
                 Assert.False(sub2.TrySkipFrame());
 
                 pub.SendMoreFrame("2").SendFrame("B");
 
                 Assert.False(sub1.TrySkipFrame());
-                Assert.Equal(new[] { "2", "B" }, sub2.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "2", "B" }, sub2.ReceiveMultipartStrings());
 
                 pub.SendMoreFrame("1&2").SendFrame("C");
 
-                Assert.Equal(new[] { "1&2", "C" }, sub1.ReceiveMultipartStrings());
-                Assert.Equal(new[] { "1&2", "C" }, sub2.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "1&2", "C" }, sub1.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "1&2", "C" }, sub2.ReceiveMultipartStrings());
             }
         }
 
-        [Fact]
+        [Test]
         public void MultiplePublishersAndSubscribersOnSameTopic()
         {
             using (var pub1 = new PublisherSocket())
@@ -163,18 +163,18 @@ namespace NetMQ.Tests
                 // Send from pub 1
                 pub1.SendMoreFrame("A").SendFrame("Hello from the first publisher");
 
-                Assert.Equal(new[] { "A", "Hello from the first publisher" }, sub1.ReceiveMultipartStrings());
-                Assert.Equal(new[] { "A", "Hello from the first publisher" }, sub2.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "A", "Hello from the first publisher" }, sub1.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "A", "Hello from the first publisher" }, sub2.ReceiveMultipartStrings());
 
                 // Send from pub 2
                 pub2.SendMoreFrame("A").SendFrame("Hello from the second publisher");
 
-                Assert.Equal(new[] { "A", "Hello from the second publisher" }, sub1.ReceiveMultipartStrings());
-                Assert.Equal(new[] { "A", "Hello from the second publisher" }, sub2.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "A", "Hello from the second publisher" }, sub1.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "A", "Hello from the second publisher" }, sub2.ReceiveMultipartStrings());
             }
         }
 
-        [Fact]
+        [Test]
         public void Unsubscribe()
         {
             using (var pub = new PublisherSocket())
@@ -190,7 +190,7 @@ namespace NetMQ.Tests
 
                 pub.SendMoreFrame("A").SendFrame("Hello");
 
-                Assert.Equal(new[] { "A", "Hello" }, sub.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "A", "Hello" }, sub.ReceiveMultipartStrings());
 
                 sub.Unsubscribe("A");
 
@@ -202,7 +202,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void ThroughXPubXSub()
         {
             using (var xpub = new XPublisherSocket())
@@ -232,14 +232,14 @@ namespace NetMQ.Tests
 
                     var frames = new List<string>();
                     Assert.True(sub.TryReceiveMultipartStrings(TimeSpan.FromSeconds(1), ref frames));
-                    Assert.Equal(
+                     Assert.AreEqual(
                         new[] { "A", "Hello" },
                         frames);
                 }
             }
         }
 
-        [Fact]
+        [Test]
         public void ThroughXPubXSubWithReconnectingPublisher()
         {
             using (var xpub = new XPublisherSocket())
@@ -281,10 +281,10 @@ namespace NetMQ.Tests
                     var frames = new List<string>();
 
                     Assert.True(sub.TryReceiveMultipartStrings(TimeSpan.FromSeconds(1), ref frames));
-                    Assert.Equal(new[] { "A", "1" }, frames);
+                     Assert.AreEqual(new[] { "A", "1" }, frames);
 
                     Assert.True(sub.TryReceiveMultipartStrings(TimeSpan.FromSeconds(1), ref frames));
-                    Assert.Equal(new[] { "A", "2" }, frames);
+                     Assert.AreEqual(new[] { "A", "2" }, frames);
                 }
             }
         }

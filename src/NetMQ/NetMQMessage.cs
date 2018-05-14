@@ -6,6 +6,7 @@ using System.Text;
 using JetBrains.Annotations;
 using NetMQ.Core;
 using System.Net;
+using System.Net.Sockets;
 
 namespace NetMQ
 {
@@ -78,9 +79,9 @@ namespace NetMQ
         /// </summary>
         public IPEndPoint Address { get; private set; }
         /// <summary>
-        /// 指令类型
+        /// message类型。上层需要根据该类型判断对数据如何处理。
         /// </summary>
-        public NetMQMessageCommondType CommondType { get; private set; }
+        public NetMQMessageType MessageType { get; private set; }
         /// <summary>
         /// Gets the first frame in the current message.
         /// </summary>
@@ -328,12 +329,21 @@ namespace NetMQ
         /// <param name="errorInfo"></param>
         public void SetError(string errorInfo)
         {
-            CommondType = NetMQMessageCommondType.Error ;
+            MessageType = NetMQMessageType.Error ;
             this.Append(errorInfo);
+        }
+        /// <summary>
+        /// socket错误
+        /// </summary>
+        /// <param name="socketError"></param>
+        public void SetSocketError(SocketError socketError)
+        {
+            MessageType = NetMQMessageType.SocketError;
+            this.Append(socketError.ToString());
         }
         internal void SetClear()
         {
-            CommondType = NetMQMessageCommondType.Clear;
+            MessageType = NetMQMessageType.DisConnected;
         }
         #region IEnumerable
 

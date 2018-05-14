@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
@@ -43,7 +43,7 @@ namespace NetMQ.Tests
 
         #region ReceiveFrameBytes
 
-        [Fact]
+        [Test]
         public void ReceiveFrameBytesSingleFrame()
         {
             var expected = m_socket.PushFrame("Hello");
@@ -51,13 +51,13 @@ namespace NetMQ.Tests
             byte[] actual = m_socket.ReceiveFrameBytes();
 
             Assert.True(actual.SequenceEqual(expected));
-            Assert.Equal(SendReceiveConstants.InfiniteTimeout, m_socket.LastTimeout);
+             Assert.AreEqual(SendReceiveConstants.InfiniteTimeout, m_socket.LastTimeout);
 
             // The buffer is copied into a new array
-            Assert.NotSame(expected, actual);
+            Assert.AreNotSame(expected, actual);
         }
 
-        [Fact]
+        [Test]
         public void ReceiveFrameBytesMultiFrame()
         {
             var expected1 = m_socket.PushFrame("Hello");
@@ -65,41 +65,41 @@ namespace NetMQ.Tests
 
             byte[] actual1 = m_socket.ReceiveFrameBytes(out bool more);
 
-            Assert.Equal(SendReceiveConstants.InfiniteTimeout, m_socket.LastTimeout);
+             Assert.AreEqual(SendReceiveConstants.InfiniteTimeout, m_socket.LastTimeout);
             Assert.True(more);
             Assert.True(actual1.SequenceEqual(expected1));
-            Assert.NotSame(expected1, actual1);
+            Assert.AreNotSame(expected1, actual1);
 
             byte[] actual2 = m_socket.ReceiveFrameBytes(out more);
 
-            Assert.Equal(SendReceiveConstants.InfiniteTimeout, m_socket.LastTimeout);
+             Assert.AreEqual(SendReceiveConstants.InfiniteTimeout, m_socket.LastTimeout);
             Assert.False(more);
             Assert.True(actual2.SequenceEqual(expected2));
-            Assert.NotSame(expected2, actual2);
+            Assert.AreNotSame(expected2, actual2);
         }
 
         #endregion
 
         #region TryReceiveFrameBytes
 
-        [Fact]
+        [Test]
         public void TryReceiveFrameBytes()
         {
             var expected = m_socket.PushFrame("Hello");
 
             Assert.True(m_socket.TryReceiveFrameBytes(out byte[] actual));
 
-            Assert.Equal(TimeSpan.Zero, m_socket.LastTimeout);
+             Assert.AreEqual(TimeSpan.Zero, m_socket.LastTimeout);
             Assert.True(actual.SequenceEqual(expected));
-            Assert.NotSame(expected, actual);
+            Assert.AreNotSame(expected, actual);
 
             Assert.False(m_socket.TryReceiveFrameBytes(out actual));
 
-            Assert.Equal(TimeSpan.Zero, m_socket.LastTimeout);
+             Assert.AreEqual(TimeSpan.Zero, m_socket.LastTimeout);
             Assert.Null(actual);
         }
 
-        [Fact]
+        [Test]
         public void TryReceiveFrameBytesWithMore()
         {
             var expected1 = m_socket.PushFrame("Hello");
@@ -107,17 +107,17 @@ namespace NetMQ.Tests
 
             Assert.True(m_socket.TryReceiveFrameBytes(out byte[] actual, out bool more));
 
-            Assert.Equal(TimeSpan.Zero, m_socket.LastTimeout);
+             Assert.AreEqual(TimeSpan.Zero, m_socket.LastTimeout);
             Assert.True(actual.SequenceEqual(expected1));
             Assert.True(more);
-            Assert.NotSame(expected1, actual);
+            Assert.AreNotSame(expected1, actual);
 
             Assert.True(m_socket.TryReceiveFrameBytes(out actual, out more));
 
-            Assert.Equal(TimeSpan.Zero, m_socket.LastTimeout);
+             Assert.AreEqual(TimeSpan.Zero, m_socket.LastTimeout);
             Assert.True(actual.SequenceEqual(expected2));
             Assert.False(more);
-            Assert.NotSame(expected1, actual);
+            Assert.AreNotSame(expected1, actual);
 
             Assert.False(m_socket.TryReceiveFrameBytes(out actual, out more));
         }
@@ -126,37 +126,37 @@ namespace NetMQ.Tests
 
         #region ReceiveMultipartBytes
 
-        [Fact]
+        [Test]
         public void ReceiveMultipartBytes()
         {
             var expected = m_socket.PushFrame("Hello");
 
             List<byte[]> actual = m_socket.ReceiveMultipartBytes();
 
-            Assert.Equal(1, actual.Count);
-            Assert.Equal(4, actual.Capacity);
+             Assert.AreEqual(1, actual.Count);
+             Assert.AreEqual(4, actual.Capacity);
             Assert.True(actual[0].SequenceEqual(expected));
-            Assert.NotSame(expected, actual[0]);
+            Assert.AreNotSame(expected, actual[0]);
         }
 
-        [Fact]
+        [Test]
         public void ReceiveMultipartBytesWithExpectedFrameCount()
         {
             var expected = m_socket.PushFrame("Hello");
 
             List<byte[]> actual = m_socket.ReceiveMultipartBytes(expectedFrameCount: 1);
 
-            Assert.Equal(1, actual.Count);
-            Assert.Equal(1, actual.Capacity);
+             Assert.AreEqual(1, actual.Count);
+             Assert.AreEqual(1, actual.Capacity);
             Assert.True(actual[0].SequenceEqual(expected));
-            Assert.NotSame(expected, actual[0]);
+            Assert.AreNotSame(expected, actual[0]);
         }
 
         #endregion
 
         #region ReceiveMultipartStrings
 
-        [Fact]
+        [Test]
         public void ReceiveMultipartStrings()
         {
             const string expected = "Hello";
@@ -165,13 +165,13 @@ namespace NetMQ.Tests
 
             List<string> actual = m_socket.ReceiveMultipartStrings();
 
-            Assert.Equal(1, actual.Count);
-            Assert.Equal(4, actual.Capacity);
-            Assert.Equal(expected, actual[0]);
-            Assert.NotSame(expected, actual[0]);
+             Assert.AreEqual(1, actual.Count);
+             Assert.AreEqual(4, actual.Capacity);
+             Assert.AreEqual(expected, actual[0]);
+            Assert.AreNotSame(expected, actual[0]);
         }
 
-        [Fact]
+        [Test]
         public void ReceiveMultipartStringsWithExpectedFrameCount()
         {
             const string expected = "Hello";
@@ -180,10 +180,10 @@ namespace NetMQ.Tests
 
             List<string> actual = m_socket.ReceiveMultipartStrings(expectedFrameCount: 1);
 
-            Assert.Equal(1, actual.Count);
-            Assert.Equal(1, actual.Capacity);
-            Assert.Equal(expected, actual[0]);
-            Assert.NotSame(expected, actual[0]);
+             Assert.AreEqual(1, actual.Count);
+             Assert.AreEqual(1, actual.Capacity);
+             Assert.AreEqual(expected, actual[0]);
+            Assert.AreNotSame(expected, actual[0]);
         }
 
         #endregion

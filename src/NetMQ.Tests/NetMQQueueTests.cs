@@ -1,26 +1,26 @@
 ﻿#if !NET35
 using System;
 using System.Threading;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
-    public class NetMQQueueTests : IClassFixture<CleanupAfterFixture>
+    public class NetMQQueueTests 
     {
         public NetMQQueueTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void EnqueueDequeue()
         {
             using (var queue = new NetMQQueue<int>())
             {
                 queue.Enqueue(1);
 
-                Assert.Equal(1, queue.Dequeue());
+                 Assert.AreEqual(1, queue.Dequeue());
             }
         }
 
-        [Fact]
+        [Test]
         public void TryDequeue()
         {
             using (var queue = new NetMQQueue<int>())
@@ -30,11 +30,11 @@ namespace NetMQ.Tests
                 queue.Enqueue(1);
 
                 Assert.True(queue.TryDequeue(out result, TimeSpan.FromMilliseconds(100)));
-                Assert.Equal(1, result);
+                 Assert.AreEqual(1, result);
             }
         }
 
-        [Fact]
+        [Test]
         public void WithPoller()
         {
             using (var queue = new NetMQQueue<int>())
@@ -44,7 +44,7 @@ namespace NetMQ.Tests
 
                 queue.ReceiveReady += (sender, args) =>
                 {
-                    Assert.Equal(1, queue.Dequeue());
+                     Assert.AreEqual(1, queue.Dequeue());
                     manualResetEvent.Set();
                 };
 

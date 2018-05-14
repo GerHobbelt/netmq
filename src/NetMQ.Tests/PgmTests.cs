@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NetMQ.Monitoring;
 using NetMQ.Sockets;
-using Xunit;
+using NUnit.Framework;
 
 // ReSharper disable ExceptionNotDocumented
 
@@ -18,12 +18,12 @@ namespace NetMQ.Tests
     //
     // Note: The 224.0.0.1 is the IPv4 All Hosts multicast group which addresses all hosts on the same network segment.
 
-    [Trait("Category", "PGM")]
-    public class PgmTests : IClassFixture<CleanupAfterFixture>
+    [Property("Category", "PGM")]
+    public class PgmTests 
     {
         public PgmTests() => NetMQConfig.Cleanup();
 
-        [Fact(Skip = "Requires MSMQ for PGM sockets")]
+        [Ignore("Requires MSMQ for PGM sockets")]
         public void SimplePubSub()
         {
             using (var pub = new PublisherSocket())
@@ -36,12 +36,12 @@ namespace NetMQ.Tests
 
                 pub.SendFrame("Hi");
 
-                Assert.Equal("Hi", sub.ReceiveFrameString(out bool more));
+                 Assert.AreEqual("Hi", sub.ReceiveFrameString(out bool more));
                 Assert.False(more);
             }
         }
 
-        [Fact(Skip = "Requires MSMQ for PGM sockets")]
+        [Ignore("Requires MSMQ for PGM sockets")]
         public void BindBothSockets()
         {
             using (var pub = new PublisherSocket())
@@ -54,12 +54,12 @@ namespace NetMQ.Tests
 
                 pub.SendFrame("Hi");
 
-                Assert.Equal("Hi", sub.ReceiveFrameString(out bool more));
+                 Assert.AreEqual("Hi", sub.ReceiveFrameString(out bool more));
                 Assert.False(more);
             }
         }
 
-        [Fact(Skip = "Requires MSMQ for PGM sockets")]
+        [Ignore("Requires MSMQ for PGM sockets")]
         public void ConnectBothSockets()
         {
             using (var pub = new PublisherSocket())
@@ -72,12 +72,12 @@ namespace NetMQ.Tests
 
                 pub.SendFrame("Hi");
 
-                Assert.Equal("Hi", sub.ReceiveFrameString(out bool more));
+                 Assert.AreEqual("Hi", sub.ReceiveFrameString(out bool more));
                 Assert.False(more);
             }
         }
 
-        [Fact(Skip = "Requires MSMQ for PGM sockets")]
+        [Ignore("Requires MSMQ for PGM sockets")]
         public void UseInterface()
         {
 #if NETCOREAPP1_0
@@ -101,12 +101,12 @@ namespace NetMQ.Tests
 
                 pub.SendFrame("Hi");
 
-                Assert.Equal("Hi", sub.ReceiveFrameString(out bool more));
+                 Assert.AreEqual("Hi", sub.ReceiveFrameString(out bool more));
                 Assert.False(more);
             }
         }
 
-        [Fact(Skip = "Requires MSMQ for PGM sockets")]
+        [Ignore("Requires MSMQ for PGM sockets")]
         public void SetPgmSettings()
         {
             const int MegaBit = 1024;
@@ -129,18 +129,18 @@ namespace NetMQ.Tests
 
                 pub.SendFrame("Hi");
 
-                Assert.Equal("Hi", sub.ReceiveFrameString(out bool more));
+                 Assert.AreEqual("Hi", sub.ReceiveFrameString(out bool more));
                 Assert.False(more);
 
-                Assert.Equal(2, pub.Options.MulticastHops);
-                Assert.Equal(40*MegaBit, pub.Options.MulticastRate);
-                Assert.Equal(TimeSpan.FromMinutes(10), pub.Options.MulticastRecoveryInterval);
-                Assert.Equal(MegaByte*10, pub.Options.SendBuffer);
-                Assert.Equal(MegaByte*10, sub.Options.ReceiveBuffer);
+                 Assert.AreEqual(2, pub.Options.MulticastHops);
+                 Assert.AreEqual(40*MegaBit, pub.Options.MulticastRate);
+                 Assert.AreEqual(TimeSpan.FromMinutes(10), pub.Options.MulticastRecoveryInterval);
+                 Assert.AreEqual(MegaByte*10, pub.Options.SendBuffer);
+                 Assert.AreEqual(MegaByte*10, sub.Options.ReceiveBuffer);
             }
         }
 
-        [Fact(Skip = "Requires MSMQ for PGM sockets")]
+        [Ignore("Requires MSMQ for PGM sockets")]
         public void TwoSubscribers()
         {
             using (var pub = new PublisherSocket())
@@ -156,15 +156,15 @@ namespace NetMQ.Tests
 
                 pub.SendFrame("Hi");
 
-                Assert.Equal("Hi", sub.ReceiveFrameString(out bool more));
+                 Assert.AreEqual("Hi", sub.ReceiveFrameString(out bool more));
                 Assert.False(more);
 
-                Assert.Equal("Hi", sub2.ReceiveFrameString(out more));
+                 Assert.AreEqual("Hi", sub2.ReceiveFrameString(out more));
                 Assert.False(more);
             }
         }
 
-        [Fact(Skip = "Requires MSMQ for PGM sockets")]
+        [Ignore("Requires MSMQ for PGM sockets")]
         public void TwoPublishers()
         {
             using (var pub = new PublisherSocket())
@@ -180,17 +180,17 @@ namespace NetMQ.Tests
                 pub.SendFrame("Hi");
 
 
-                Assert.Equal("Hi", sub.ReceiveFrameString(out bool more));
+                 Assert.AreEqual("Hi", sub.ReceiveFrameString(out bool more));
                 Assert.False(more);
 
                 pub2.SendFrame("Hi2");
 
-                Assert.Equal("Hi2", sub.ReceiveFrameString(out more));
+                 Assert.AreEqual("Hi2", sub.ReceiveFrameString(out more));
                 Assert.False(more);
             }
         }
 
-        [Fact(Skip = "Requires MSMQ for PGM sockets")]
+        [Ignore("Requires MSMQ for PGM sockets")]
         public void Sending1000Messages()
         {
             // creating two different context and sending 1000 messages
@@ -210,7 +210,7 @@ namespace NetMQ.Tests
 
                     while (count < 1000)
                     {
-                        Assert.Equal(count, BitConverter.ToInt32(sub.ReceiveFrameBytes(out bool more), 0));
+                         Assert.AreEqual(count, BitConverter.ToInt32(sub.ReceiveFrameBytes(out bool more), 0));
                         Assert.False(more);
                         count++;
                     }
@@ -237,10 +237,10 @@ namespace NetMQ.Tests
             pubTask.Wait();
             subTask.Wait();
 
-            Assert.Equal(1000, count);
+             Assert.AreEqual(1000, count);
         }
 
-        [Fact(Skip = "Requires MSMQ for PGM sockets")]
+        [Ignore("Requires MSMQ for PGM sockets")]
         public void LargeMessage()
         {
             using (var pub = new PublisherSocket())
@@ -260,16 +260,16 @@ namespace NetMQ.Tests
 
                 byte[] message = sub.ReceiveFrameBytes();
 
-                Assert.Equal(3200, message.Length);
+                 Assert.AreEqual(3200, message.Length);
 
                 for (Int16 i = 0; i < 1600; i++)
-                    Assert.Equal(i, BitConverter.ToInt16(message, i*2));
+                     Assert.AreEqual(i, BitConverter.ToInt16(message, i*2));
             }
         }
 
-        [Theory(Skip = "Requires MSMQ for PGM sockets")]
-        [InlineData("pgm://239.0.0.1:1000")]
-        [InlineData("tcp://localhost:60000")]
+        [Ignore("Requires MSMQ for PGM sockets")]
+        [TestCase("pgm://239.0.0.1:1000")]
+        [TestCase("tcp://localhost:60000")]
         public void SubscriberCleanupOnUnbind(string address)
         {
             for (var i = 0; i < 10; i++)

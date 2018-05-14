@@ -87,6 +87,14 @@ namespace ConsoleApp1
         }
         private static void Main(string[] args)
         {
+            using (var client = new StreamSocket())
+            {
+                client.Connect("tcp://127.0.0.1:" + 12345);
+                client.Options.NotifyWhenConnectedFail = true;
+                client.Options.ReconnectIntervalMax = TimeSpan.FromSeconds(1);
+                NetMQMessage reqMessage =  client.ReceiveMultipartMessage();
+            }
+            Console.ReadKey();
             StreamToStream();
             //因为identity是内部生成的，第一部分是identity，第二部分是报文内容
 

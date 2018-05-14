@@ -389,14 +389,6 @@ namespace NetMQ
             set => m_socket.SetSocketOption(ZmqSocketOption.DisableTimeWait, value);
         }
 
-        /// <summary>
-        /// delimiter消息是否上抛
-        /// </summary>
-        public bool ThrowDelimiter
-        {
-            get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.ThrowDelimiter);
-            set => m_socket.SetSocketOption(ZmqSocketOption.ThrowDelimiter, value);
-        }
 
         /// <summary>
         /// Controls the maximum datagram size for PGM.
@@ -413,6 +405,30 @@ namespace NetMQ
         {
             get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.ProactiveCloseConnect);
             set => m_socket.SetSocketOption(ZmqSocketOption.ProactiveCloseConnect, value);
+        }
+        /// <summary>
+        /// delimiter消息是否上抛
+        /// </summary>
+        public bool ThrowDelimiter
+        {
+            get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.ThrowDelimiter);
+            set => m_socket.SetSocketOption(ZmqSocketOption.ThrowDelimiter, value);
+        }
+        /// <summary>
+        /// 连接失败时是否通知，默认为false，若设置为true，会设置NetMQMessage的MessageType为Error。
+        /// </summary>
+        public bool NotifyWhenConnectedFail
+        {
+            get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.NotifyWhenConnectedFail);
+            set => m_socket.SetSocketOption(ZmqSocketOption.NotifyWhenConnectedFail, value);
+        }
+        /// <summary>
+        /// 连接或监听异常时是否通知，默认为false，若设置为true，会设置NetMQMessage的MessageType为Error。
+        /// </summary>
+        public bool NotifyWhenConnectOrListenThrowException
+        {
+            get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.NotifyWhenConnectOrListenThrowException);
+            set => m_socket.SetSocketOption(ZmqSocketOption.NotifyWhenConnectOrListenThrowException, value);
         }
     }
 }

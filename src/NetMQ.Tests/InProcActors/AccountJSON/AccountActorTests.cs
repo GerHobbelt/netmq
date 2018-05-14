@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests.InProcActors.AccountJSON
 {
     public class AccountActorTests
     {
-        [Fact]
+        [Test]
         public void AccountActorJsonSendReceiveTests()
         {
             var account = new Account(1, "Test Account", "11223", 0);
@@ -19,7 +19,7 @@ namespace NetMQ.Tests.InProcActors.AccountJSON
 
                 var updatedAccount = JsonConvert.DeserializeObject<Account>(actor.ReceiveFrameString());
 
-                Assert.Equal(10.0m, updatedAccount.Balance);
+                 Assert.AreEqual(10.0m, updatedAccount.Balance);
             }
         }
     }

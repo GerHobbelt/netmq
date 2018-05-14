@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NetMQ.Sockets;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
-    public class ProxyTests : IClassFixture<CleanupAfterFixture>
+    public class ProxyTests 
     {
         /// <summary>Clean up before each test.</summary>
         public ProxyTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void SendAndReceive()
         {
             using (var front = new RouterSocket())
@@ -29,16 +29,16 @@ namespace NetMQ.Tests
                     server.Connect("inproc://backend");
 
                     client.SendFrame("hello");
-                    Assert.Equal("hello", server.ReceiveFrameString());
+                     Assert.AreEqual("hello", server.ReceiveFrameString());
                     server.SendFrame("reply");
-                    Assert.Equal("reply", client.ReceiveFrameString());
+                     Assert.AreEqual("reply", client.ReceiveFrameString());
                 }
 
                 proxy.Stop();
             }
         }
 
-        [Fact]
+        [Test]
         public void ControlSocketObservedMessages()
         {
             using (var front = new RouterSocket())
@@ -62,24 +62,24 @@ namespace NetMQ.Tests
                     server.Connect("inproc://backend");
 
                     client.SendFrame("hello");
-                    Assert.Equal("hello", server.ReceiveFrameString());
+                     Assert.AreEqual("hello", server.ReceiveFrameString());
                     server.SendFrame("reply");
-                    Assert.Equal("reply", client.ReceiveFrameString());
+                     Assert.AreEqual("reply", client.ReceiveFrameString());
                 }
 
                 Assert.NotNull(controlPull.ReceiveFrameBytes()); // receive identity
-                Assert.Empty(controlPull.ReceiveFrameString());  // pull terminator
-                Assert.Equal("hello", controlPull.ReceiveFrameString());
+                Assert.IsEmpty(controlPull.ReceiveFrameString());  // pull terminator
+                 Assert.AreEqual("hello", controlPull.ReceiveFrameString());
 
                 Assert.NotNull(controlPull.ReceiveFrameBytes()); // receive identity
-                Assert.Empty(controlPull.ReceiveFrameString());  // pull terminator
-                Assert.Equal("reply", controlPull.ReceiveFrameString());
+                Assert.IsEmpty(controlPull.ReceiveFrameString());  // pull terminator
+                 Assert.AreEqual("reply", controlPull.ReceiveFrameString());
 
                 proxy.Stop();
             }
         }
 
-        [Fact]
+        [Test]
         public void SeparateControlSocketsObservedMessages()
         {
             using (var front = new RouterSocket())
@@ -107,24 +107,24 @@ namespace NetMQ.Tests
                     server.Connect("inproc://backend");
 
                     client.SendFrame("hello");
-                    Assert.Equal("hello", server.ReceiveFrameString());
+                     Assert.AreEqual("hello", server.ReceiveFrameString());
                     server.SendFrame("reply");
-                    Assert.Equal("reply", client.ReceiveFrameString());
+                     Assert.AreEqual("reply", client.ReceiveFrameString());
                 }
 
                 Assert.NotNull(controlInPull.ReceiveFrameBytes()); // receive identity
-                Assert.Empty(controlInPull.ReceiveFrameString());  // pull terminator
-                Assert.Equal("hello", controlInPull.ReceiveFrameString());
+                Assert.IsEmpty(controlInPull.ReceiveFrameString());  // pull terminator
+                 Assert.AreEqual("hello", controlInPull.ReceiveFrameString());
 
                 Assert.NotNull(controlOutPull.ReceiveFrameBytes()); // receive identity
-                Assert.Empty(controlOutPull.ReceiveFrameString());  // pull terminator
-                Assert.Equal("reply", controlOutPull.ReceiveFrameString());
+                Assert.IsEmpty(controlOutPull.ReceiveFrameString());  // pull terminator
+                 Assert.AreEqual("reply", controlOutPull.ReceiveFrameString());
 
                 proxy.Stop();
             }
         }
 
-        [Fact]
+        [Test]
         public void StartAndStopStateValidation()
         {
             using (var front = new RouterSocket())
@@ -143,22 +143,22 @@ namespace NetMQ.Tests
                     client.Connect("inproc://frontend");
                     server.Connect("inproc://backend");
                     client.SendFrame("hello");
-                    Assert.Equal("hello", server.ReceiveFrameString());
+                     Assert.AreEqual("hello", server.ReceiveFrameString());
                     server.SendFrame("reply");
-                    Assert.Equal("reply", client.ReceiveFrameString());
+                     Assert.AreEqual("reply", client.ReceiveFrameString());
                 }
 
-                Assert.Throws<InvalidOperationException>((Action)proxy.Start);
-                Assert.Throws<InvalidOperationException>((Action)proxy.Start);
-                Assert.Throws<InvalidOperationException>((Action)proxy.Start);
+                Assert.Throws<InvalidOperationException>(proxy.Start);
+                Assert.Throws<InvalidOperationException>(proxy.Start);
+                Assert.Throws<InvalidOperationException>(proxy.Start);
 
                 proxy.Stop(); // blocks until stopped
 
-                Assert.Throws<InvalidOperationException>((Action)proxy.Stop);
+                Assert.Throws<InvalidOperationException>(proxy.Stop);
             }
         }
 
-        [Fact]
+        [Test]
         public void StartAgainAfterStop()
         {
             using (var front = new RouterSocket())
@@ -177,9 +177,9 @@ namespace NetMQ.Tests
                     client.Connect("inproc://frontend");
                     server.Connect("inproc://backend");
                     client.SendFrame("hello");
-                    Assert.Equal("hello", server.ReceiveFrameString());
+                     Assert.AreEqual("hello", server.ReceiveFrameString());
                     server.SendFrame("reply");
-                    Assert.Equal("reply", client.ReceiveFrameString());
+                     Assert.AreEqual("reply", client.ReceiveFrameString());
                 }
 
                 proxy.Stop(); // blocks until stopped
@@ -194,16 +194,16 @@ namespace NetMQ.Tests
                     client.Connect("inproc://frontend");
                     server.Connect("inproc://backend");
                     client.SendFrame("hello");
-                    Assert.Equal("hello", server.ReceiveFrameString());
+                     Assert.AreEqual("hello", server.ReceiveFrameString());
                     server.SendFrame("reply");
-                    Assert.Equal("reply", client.ReceiveFrameString());
+                     Assert.AreEqual("reply", client.ReceiveFrameString());
                 }
 
                 proxy.Stop(); // blocks until stopped
             }
         }
 
-        [Fact]
+        [Test]
         public void StoppingProxyDisengagesFunctionality()
         {
             using (var front = new RouterSocket())
@@ -222,9 +222,9 @@ namespace NetMQ.Tests
                     client.Connect("inproc://frontend");
                     server.Connect("inproc://backend");
                     client.SendFrame("hello");
-                    Assert.Equal("hello", server.ReceiveFrameString());
+                     Assert.AreEqual("hello", server.ReceiveFrameString());
                     server.SendFrame("reply");
-                    Assert.Equal("reply", client.ReceiveFrameString());
+                     Assert.AreEqual("reply", client.ReceiveFrameString());
 
                     proxy.Stop(); // blocks until stopped
 
@@ -241,7 +241,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void TestProxySendAndReceiveWithExternalPoller()
         {
             using (var front = new RouterSocket())
@@ -263,9 +263,9 @@ namespace NetMQ.Tests
                     server.Connect("inproc://backend");
 
                     client.SendFrame("hello");
-                    Assert.Equal("hello", server.ReceiveFrameString());
+                     Assert.AreEqual("hello", server.ReceiveFrameString());
                     server.SendFrame("reply");
-                    Assert.Equal("reply", client.ReceiveFrameString());
+                     Assert.AreEqual("reply", client.ReceiveFrameString());
 
                     // Now stop the external poller
                     Assert.True(poller.IsRunning);

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using NetMQ.Sockets;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
-    public class CleanupTests : IClassFixture<CleanupAfterFixture>
+    public class CleanupTests 
     {
         public CleanupTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void Block()
         {
             const int count = 1000;
@@ -32,7 +32,7 @@ namespace NetMQ.Tests
             Assert.True(stopwatch.ElapsedMilliseconds > 500);
         }
 
-        [Fact]
+        [Test]
         public void NoBlock()
         {
             const int count = 1000;
@@ -55,7 +55,7 @@ namespace NetMQ.Tests
             Assert.True(stopwatch.ElapsedMilliseconds < 500);
         }
 
-        [Fact]
+        [Test]
         public void NoBlockNoDispose()
         {
             new DealerSocket(">tcp://localhost:5557");

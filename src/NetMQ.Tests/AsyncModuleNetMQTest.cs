@@ -1,17 +1,16 @@
 ﻿using NetMQ.Sockets;
 using System.Threading;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
     /// <summary>
     /// 基于AsyncModule.NetMQ新增的功能测试
     /// </summary>
-    public class AsyncModuleNetMQTest : IClassFixture<CleanupAfterFixture>
+    public class AsyncModuleNetMQTest 
     {
         public AsyncModuleNetMQTest() => NetMQConfig.Cleanup();
-
-        [Fact(DisplayName = "服务端可获取客户端的地址测试")]
+        [Test(Description = "服务端可获取客户端的地址测试")]
         public void GetClientAddressTest()
         {
             using (var server = new StreamSocket())
@@ -32,18 +31,18 @@ namespace NetMQ.Tests
                 client.SendMoreFrame(clientId).SendFrame(request);
 
                 NetMQMessage reqMessage = server.ReceiveMultipartMessage();
-                Assert.Equal(reqMessage.Address.ToString(), client.Options.LocalEndpoint);
+                 Assert.AreEqual(reqMessage.Address.ToString(), client.Options.LocalEndpoint);
 
-                Assert.Equal(request, reqMessage.Last.ConvertToString());
+                 Assert.AreEqual(request, reqMessage.Last.ConvertToString());
 
                 server.SendMoreFrame(reqMessage.First.Buffer).SendFrame(response);
 
-                Assert.Equal(clientId, client.ReceiveFrameBytes());
-                Assert.Equal(response, client.ReceiveFrameString());
+                 Assert.AreEqual(clientId, client.ReceiveFrameBytes());
+                 Assert.AreEqual(response, client.ReceiveFrameString());
             }
         }
 
-        [Fact(DisplayName ="服务端主动关闭连接测试")]
+        [Test(Description ="服务端主动关闭连接测试")]
         public void ProactiveCloseConnect()
         {
             var server = new StreamSocket();
@@ -67,16 +66,16 @@ namespace NetMQ.Tests
                 client.SendMoreFrame(clientId).SendFrame(request);
 
                 NetMQMessage reqMessage = server.ReceiveMultipartMessage();
-                Assert.Equal(reqMessage.Address.ToString() , client.Options.LocalEndpoint);
+                 Assert.AreEqual(reqMessage.Address.ToString() , client.Options.LocalEndpoint);
 
-                Assert.Equal(request ,reqMessage.Last.ConvertToString());
+                 Assert.AreEqual(request ,reqMessage.Last.ConvertToString());
 
                 server.SendMoreFrame(reqMessage.First.Buffer).SendFrame(response);
 
                 var respMessage =  client.ReceiveMultipartMessage();
                 Thread.Sleep(1000);
                 //连接主动断开，自动重连，地址应该变了
-                Assert.NotEqual(reqMessage.Address.ToString(), client.Options.LocalEndpoint);
+                Assert.AreNotEqual(reqMessage.Address.ToString(), client.Options.LocalEndpoint);
             }
         }
 

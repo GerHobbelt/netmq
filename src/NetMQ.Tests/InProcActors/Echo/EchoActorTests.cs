@@ -1,13 +1,13 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 
 namespace NetMQ.Tests.InProcActors.Echo
 {
     public class EchoActorTests
     {
         [Theory]
-        [InlineData("I like NetMQ")]
-        [InlineData("NetMQ Is quite awesome")]
-        [InlineData("Agreed sockets on steroids with isotopes")]
+        [TestCase("I like NetMQ")]
+        [TestCase("NetMQ Is quite awesome")]
+        [TestCase("Agreed sockets on steroids with isotopes")]
         public void EchoActorSendReceiveTests(string actorMessage)
         {
             using (var actor = NetMQActor.Create(new EchoShimHandler()))
@@ -15,14 +15,14 @@ namespace NetMQ.Tests.InProcActors.Echo
                 actor.SendMoreFrame("ECHO");
                 actor.SendFrame(actorMessage);
 
-                Assert.Equal(
+                 Assert.AreEqual(
                     $"ECHO BACK : {actorMessage}",
                     actor.ReceiveFrameString());
             }
         }
 
         [Theory]
-        [InlineData("BadCommand1")]
+        [TestCase("BadCommand1")]
         public void BadCommandTests(string command)
         {
             const string actorMessage = "whatever";
@@ -32,7 +32,7 @@ namespace NetMQ.Tests.InProcActors.Echo
                 actor.SendMoreFrame(command);
                 actor.SendFrame(actorMessage);
 
-                Assert.Equal("Error: invalid message to actor", actor.ReceiveFrameString());
+                 Assert.AreEqual("Error: invalid message to actor", actor.ReceiveFrameString());
             }
         }
     }

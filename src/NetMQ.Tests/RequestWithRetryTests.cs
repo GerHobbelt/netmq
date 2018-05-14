@@ -2,15 +2,15 @@
 using System;
 using System.Diagnostics;
 using NetMQ.Sockets;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
-    public class RequestWithRetryTests : IClassFixture<CleanupAfterFixture>
+    public class RequestWithRetryTests 
     {
         public RequestWithRetryTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void RequestResponseMultipartMessageWithRetrySucceedsFirstTry()
         {
             const string address = "tcp://127.0.0.1:50001";
@@ -42,14 +42,14 @@ namespace NetMQ.Tests
                     var responseMessage = RequestSocket.RequestResponseMultipartMessageWithRetry(address,
                         requestMessage, numTries, requestTimeout, progressPublisher);
                     Assert.NotNull(responseMessage);
-                    Assert.Equal(1, responseMessage.FrameCount);
+                     Assert.AreEqual(1, responseMessage.FrameCount);
                     var responseString = responseMessage.First.ConvertToString();
-                    Assert.Equal("Hi", responseString);
+                     Assert.AreEqual("Hi", responseString);
                 }
             }
         }
 
-        [Fact]
+        [Test]
         public void RequestResponseMultipartMessageWithRetryFails()
         {
             const string address = "tcp://127.0.0.1:50002";
@@ -83,7 +83,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void RequestResponseMultipartMessageWithRetrySucceedsNotOnFirstTry()
         {
             const string address = "tcp://127.0.0.1:50001";
@@ -123,14 +123,14 @@ namespace NetMQ.Tests
                     var responseMessage = RequestSocket.RequestResponseMultipartMessageWithRetry(address,
                         requestMessage, numTries, requestTimeout, progressPublisher);
                     Assert.NotNull(responseMessage);
-                    Assert.Equal(1, responseMessage.FrameCount);
+                     Assert.AreEqual(1, responseMessage.FrameCount);
                     var responseString = responseMessage.First.ConvertToString();
-                    Assert.Equal("Hi", responseString);
+                     Assert.AreEqual("Hi", responseString);
                 }
             }
         }
 
-        [Fact]
+        [Test]
         public void RequestResponseStringWithRetryFails()
         {
             const string address = "tcp://127.0.0.1:50002";
@@ -162,7 +162,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void RequestResponseStringWithRetrySucceedsNotOnFirstTry()
         {
             const string address = "tcp://127.0.0.1:50001";
@@ -199,7 +199,7 @@ namespace NetMQ.Tests
                 {
                     var responseMessage = RequestSocket.RequestResponseStringWithRetry(address,
                         "Hi", numTries, requestTimeout, progressPublisher);
-                    Assert.Equal("Hi", responseMessage);
+                     Assert.AreEqual("Hi", responseMessage);
                 }
             }
         }

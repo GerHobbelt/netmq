@@ -291,6 +291,14 @@ namespace NetMQ.Core
         public bool ThrowDelimiter { get; set; }
 
         /// <summary>
+        /// 连接失败时是否通知，默认为false，若设置为true，则会生成一个Msg放入管道中。会设置NetMQMessage的MessageType为Error。
+        /// </summary>
+        public bool NotifyWhenConnectedFail { get; set; }
+        /// <summary>
+        /// 连接或监听异常时是否通知，默认为false，若设置为true，则会生成一个Msg放入管道中。会设置NetMQMessage的MessageType为Error。
+        /// </summary>
+        public bool NotifyWhenConnectOrListenThrowException { get; set; }
+        /// <summary>
         /// Assign the given optionValue to the specified option.
         /// </summary>
         /// <param name="option">a ZmqSocketOption that specifies what to set</param>
@@ -430,6 +438,12 @@ namespace NetMQ.Core
                     break;
                 case ZmqSocketOption.ThrowDelimiter:
                     ThrowDelimiter = (bool)optionValue;
+                    break;
+                case ZmqSocketOption.NotifyWhenConnectedFail:
+                    NotifyWhenConnectedFail = (bool)optionValue;
+                    break;
+                case ZmqSocketOption.NotifyWhenConnectOrListenThrowException:
+                    NotifyWhenConnectOrListenThrowException = (bool)optionValue;
                     break;
                 default:
                     throw new InvalidException("Options.SetSocketOption called with invalid ZmqSocketOption of " + option);

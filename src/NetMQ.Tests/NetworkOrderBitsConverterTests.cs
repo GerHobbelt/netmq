@@ -1,10 +1,10 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
     public class NetworkOrderBitsConverterTests
     {
-        [Fact]
+        [Test]
         public void TestInt64()
         {
             unchecked
@@ -18,19 +18,19 @@ namespace NetMQ.Tests
         {
             byte[] buffer = NetworkOrderBitsConverter.GetBytes(num);
 
-            Assert.Equal(8, buffer.Length);
-            Assert.Equal(bytes, buffer);
+             Assert.AreEqual(8, buffer.Length);
+             Assert.AreEqual(bytes, buffer);
 
-            Assert.Equal(num, NetworkOrderBitsConverter.ToInt64(buffer));
+             Assert.AreEqual(num, NetworkOrderBitsConverter.ToInt64(buffer));
 
             NetworkOrderBitsConverter.PutInt64(num, buffer);
 
-            Assert.Equal(bytes, buffer);
+             Assert.AreEqual(bytes, buffer);
 
-            Assert.Equal(num, NetworkOrderBitsConverter.ToInt64(buffer));
+             Assert.AreEqual(num, NetworkOrderBitsConverter.ToInt64(buffer));
         }
 
-        [Fact]
+        [Test]
         public void TestInt32()
         {
             unchecked
@@ -44,19 +44,19 @@ namespace NetMQ.Tests
         {
             byte[] buffer = NetworkOrderBitsConverter.GetBytes(num);
 
-            Assert.Equal(4, buffer.Length);
-            Assert.Equal(bytes, buffer);
+             Assert.AreEqual(4, buffer.Length);
+             Assert.AreEqual(bytes, buffer);
 
-            Assert.Equal(num, NetworkOrderBitsConverter.ToInt32(buffer));
+             Assert.AreEqual(num, NetworkOrderBitsConverter.ToInt32(buffer));
 
             NetworkOrderBitsConverter.PutInt32(num, buffer);
 
-            Assert.Equal(bytes, buffer);
+             Assert.AreEqual(bytes, buffer);
 
-            Assert.Equal(num, NetworkOrderBitsConverter.ToInt32(buffer));
+             Assert.AreEqual(num, NetworkOrderBitsConverter.ToInt32(buffer));
         }
 
-        [Fact]
+        [Test]
         public void TestInt16()
         {
             unchecked
@@ -70,19 +70,19 @@ namespace NetMQ.Tests
         {
             byte[] buffer = NetworkOrderBitsConverter.GetBytes(num);
 
-            Assert.Equal(2, buffer.Length);
-            Assert.Equal(bytes, buffer);
+             Assert.AreEqual(2, buffer.Length);
+             Assert.AreEqual(bytes, buffer);
 
-            Assert.Equal(num, NetworkOrderBitsConverter.ToInt16(buffer));
+             Assert.AreEqual(num, NetworkOrderBitsConverter.ToInt16(buffer));
 
             NetworkOrderBitsConverter.PutInt16(num, buffer);
 
-            Assert.Equal(bytes, buffer);
+             Assert.AreEqual(bytes, buffer);
 
-            Assert.Equal(num, NetworkOrderBitsConverter.ToInt16(buffer));
+             Assert.AreEqual(num, NetworkOrderBitsConverter.ToInt16(buffer));
         }
 
-//        [Fact]
+//        [Test]
 //        public void PutInt64Perf()
 //        {
 //            for (var j = 0; j < 10; j++)

@@ -4,16 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using NetMQ.Monitoring;
 using NetMQ.Sockets;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
-    [Trait("Category", "Monitor")]
-    public class NetMQMonitorTests : IClassFixture<CleanupAfterFixture>
+    [Property("Category", "Monitor")]
+    public class NetMQMonitorTests 
     {
         public NetMQMonitorTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void Monitoring()
         {
             using (var rep = new ResponseSocket())
@@ -56,7 +56,7 @@ namespace NetMQ.Tests
         }
 
 #if !NET35
-        [Fact]
+        [Test]
         public void StartAsync()
         {
             using (var rep = new ResponseSocket())
@@ -64,14 +64,14 @@ namespace NetMQ.Tests
             {
                 var task = monitor.StartAsync();
                 Thread.Sleep(200);
-                Assert.Equal(TaskStatus.Running, task.Status);
+                 Assert.AreEqual(TaskStatus.Running, task.Status);
                 monitor.Stop();
                 Assert.True(task.Wait(TimeSpan.FromMilliseconds(1000)));
             }
         }
 #endif
 
-        [Fact]
+        [Test]
         public void NoHangWhenMonitoringUnboundInprocAddress()
         {
             using (var monitor = new NetMQMonitor(new PairSocket(), "inproc://unbound-inproc-address", ownsSocket: true))
@@ -80,12 +80,12 @@ namespace NetMQ.Tests
                 monitor.Stop();
 
                 var ex = Assert.Throws<AggregateException>(() => task.Wait(TimeSpan.FromMilliseconds(1000)));
-                Assert.Equal(1, ex.InnerExceptions.Count);
+                 Assert.AreEqual(1, ex.InnerExceptions.Count);
                 Assert.True(ex.InnerExceptions.Single() is EndpointNotFoundException);
             }
         }
 
-        [Fact]
+        [Test]
         public void ErrorCodeTest()
         {
             using (var req = new RequestSocket())
@@ -123,7 +123,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void MonitorDisposeProperlyWhenDisposedAfterMonitoredTcpSocket()
         {
             // The bug:
@@ -146,9 +146,9 @@ namespace NetMQ.Tests
                     req.Connect("tcp://127.0.0.1:" + port);
 
                     req.SendFrame("question");
-                    Assert.Equal("question", res.ReceiveFrameString());
+                     Assert.AreEqual("question", res.ReceiveFrameString());
                     res.SendFrame("response");
-                    Assert.Equal("response", req.ReceiveFrameString());
+                     Assert.AreEqual("response", req.ReceiveFrameString());
                 }
                 Thread.Sleep(100);
                 // Monitor.Dispose should complete

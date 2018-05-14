@@ -266,7 +266,10 @@ namespace NetMQ.Core
                     return true;
                 }
             }
-            msg.SetAddress(m_engine.RemotEndPoint);
+            if (m_engine != null)
+            {
+                msg.SetAddress(m_engine.RemotEndPoint);
+            }
             if (m_pipe != null && m_pipe.Write(ref msg))
             {
                 msg.InitEmpty();

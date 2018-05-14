@@ -1,13 +1,13 @@
 ﻿using NetMQ.Sockets;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
-    public class PushPullTests : IClassFixture<CleanupAfterFixture>
+    public class PushPullTests 
     {
         public PushPullTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void SimplePushPull()
         {
             using (var pullSocket = new PullSocket())
@@ -18,11 +18,11 @@ namespace NetMQ.Tests
 
                 pushSocket.SendFrame("hello");
 
-                Assert.Equal("hello", pullSocket.ReceiveFrameString());
+                 Assert.AreEqual("hello", pullSocket.ReceiveFrameString());
             }
         }
 
-        [Fact]
+        [Test]
         public void EmptyMessage()
         {
             using (var pullSocket = new PullSocket())
@@ -33,7 +33,7 @@ namespace NetMQ.Tests
 
                 pushSocket.SendFrame(new byte[300]);
 
-                Assert.Equal(300, pullSocket.ReceiveFrameString().Length);
+                 Assert.AreEqual(300, pullSocket.ReceiveFrameString().Length);
             }
         }
     }

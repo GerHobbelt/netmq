@@ -1,14 +1,14 @@
 ﻿using System.Threading;
 using NetMQ.Sockets;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
-    public class NetMQProactorTests : IClassFixture<CleanupAfterFixture>
+    public class NetMQProactorTests 
     {
         public NetMQProactorTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void ReceiveMessage()
         {
             using (var server = new DealerSocket("@tcp://127.0.0.1:5555"))
@@ -17,7 +17,7 @@ namespace NetMQ.Tests
             using (new NetMQProactor(client, (socket, message) =>
             {
                 manualResetEvent.Set();
-                Assert.Same(client, socket);
+                Assert.AreSame(client, socket);
             }))
             {
                 server.SendFrame("Hello");

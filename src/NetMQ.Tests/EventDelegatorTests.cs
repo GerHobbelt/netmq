@@ -1,5 +1,5 @@
 ﻿using System;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
@@ -13,7 +13,7 @@ namespace NetMQ.Tests
 
         private event EventHandler<Args<int>> Source;
 
-        [Fact]
+        [Test]
         public void Basics()
         {
             EventHandler<Args<int>> sourceHandler = null;
@@ -39,15 +39,15 @@ namespace NetMQ.Tests
 
             Assert.NotNull(Source);
 
-            Assert.Equal(0, callCount);
+             Assert.AreEqual(0, callCount);
 
             Source(this, new Args<int>(5));
-            Assert.Equal(2.5, value);
-            Assert.Equal(1, callCount);
+             Assert.AreEqual(2.5, value);
+             Assert.AreEqual(1, callCount);
 
             Source(this, new Args<int>(12));
-            Assert.Equal(6.0, value);
-            Assert.Equal(2, callCount);
+             Assert.AreEqual(6.0, value);
+             Assert.AreEqual(2, callCount);
 
             delegator.Event -= DelegatorHandler;
 

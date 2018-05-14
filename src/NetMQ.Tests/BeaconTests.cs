@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Threading;
-using Xunit;
+using NUnit.Framework;
 
 // ReSharper disable ExceptionNotDocumented
 
 namespace NetMQ.Tests
 {
-    [Trait("Category", "Beacon")]
-    public class BeaconTests : IClassFixture<CleanupAfterFixture>
+    [Property("Category", "Beacon")]
+    public class BeaconTests 
     {
         private static readonly TimeSpan s_publishInterval = TimeSpan.FromMilliseconds(100);
 
         public BeaconTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void SimplePublishSubscribe()
         {
             using (var speaker = new NetMQBeacon())
@@ -28,11 +28,11 @@ namespace NetMQ.Tests
 
                 var message = listener.Receive();
 
-                Assert.Equal("Hello", message.String);
+                 Assert.AreEqual("Hello", message.String);
             }
         }
 
-        [Fact]
+        [Test]
         public void Silence()
         {
             using (var speaker = new NetMQBeacon())
@@ -48,13 +48,13 @@ namespace NetMQ.Tests
                 Thread.Sleep(10);
                 speaker.Silence();
 
-                Assert.Equal("Hello", listener.Receive().String);
+                 Assert.AreEqual("Hello", listener.Receive().String);
 
                 Assert.False(listener.TryReceive(TimeSpan.FromMilliseconds(300), out BeaconMessage message));
             }
         }
 
-        [Fact]
+        [Test]
         public void Unsubscribe()
         {
             using (var speaker = new NetMQBeacon())
@@ -70,13 +70,13 @@ namespace NetMQ.Tests
                 Thread.Sleep(10);
                 listener.Unsubscribe();
 
-                Assert.Equal("Hello", listener.Receive().String);
+                 Assert.AreEqual("Hello", listener.Receive().String);
 
                 Assert.False(listener.TryReceive(TimeSpan.FromMilliseconds(300), out BeaconMessage message));
             }
         }
 
-        [Fact]
+        [Test]
         public void SubscribeToDifferentTopic()
         {
             using (var speaker = new NetMQBeacon())
@@ -94,7 +94,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void Polling()
         {
             using (var speaker = new NetMQBeacon())
@@ -123,19 +123,19 @@ namespace NetMQ.Tests
 
                     manualResetEvent.WaitOne();
 
-                    Assert.Equal("Hello", message);
+                     Assert.AreEqual("Hello", message);
                 }
             }
         }
 
-        [Fact]
+        [Test]
         public void NeverConfigured()
         {
             using (new NetMQBeacon())
             {}
         }
 
-        [Fact]
+        [Test]
         public void ConfigureTwice()
         {
             using (var speaker = new NetMQBeacon())
@@ -151,11 +151,11 @@ namespace NetMQ.Tests
 
                 string message = listener.Receive().String;
 
-                Assert.Equal("Hello", message);
+                 Assert.AreEqual("Hello", message);
             }
         }
 
-        [Fact]
+        [Test]
         public void BothSpeakerAndListener()
         {
             using (var beacon1 = new NetMQBeacon())
@@ -169,12 +169,12 @@ namespace NetMQ.Tests
                 beacon2.Publish("H2", s_publishInterval);
                 beacon2.Subscribe("H");
 
-                Assert.Equal("H2", beacon1.Receive().String);
-                Assert.Equal("H1", beacon2.Receive().String);
+                 Assert.AreEqual("H2", beacon1.Receive().String);
+                 Assert.AreEqual("H1", beacon2.Receive().String);
             }
         }
 
-        [Fact]
+        [Test]
         public void BothSpeakerAndListenerOverLoopback()
         {
             using (var beacon1 = new NetMQBeacon())
@@ -188,8 +188,8 @@ namespace NetMQ.Tests
                 beacon2.Publish("H2", s_publishInterval);
                 beacon2.Subscribe("H");
 
-                Assert.Equal("H2", beacon1.Receive().String);
-                Assert.Equal("H1", beacon2.Receive().String);
+                 Assert.AreEqual("H2", beacon1.Receive().String);
+                 Assert.AreEqual("H1", beacon2.Receive().String);
             }
         }
     }

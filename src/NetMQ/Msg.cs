@@ -24,6 +24,7 @@ using JetBrains.Annotations;
 using NetMQ.Core.Utils;
 using NetMQ.Core;
 using System.Net;
+using System.Net.Sockets;
 
 namespace NetMQ
 {
@@ -64,7 +65,11 @@ namespace NetMQ
 
         /// <summary>The <see cref="Msg"/> is a delimiter frame and doesn't contain any data.</summary>
         /// <remarks>Delimiters are commonly used to mark a boundary between groups frames.</remarks>
-        Delimiter = 104
+        Delimiter = 104,
+        /// <summary>
+        /// this is a error msg, need notify upward 
+        /// </summary>
+        Error = 105
     }
 
     /// <summary>
@@ -118,6 +123,15 @@ namespace NetMQ
         /// <returns><c>true</c> if the <see cref="Msg"/> is initialised, otherwise <c>false</c>.</returns>
         public bool IsInitialised => MsgType != MsgType.Uninitialised;
 
+        /// <summary>
+        /// socket连接读写时是否有错误
+        /// </summary>
+        public bool IsError => MsgType == MsgType.Error;
+
+        /// <summary>
+        /// socket error
+        /// </summary>
+        public SocketError SocketError { get; private set; }
         #endregion
 
         #region MsgFlags
@@ -233,6 +247,15 @@ namespace NetMQ
         {
             MsgType = MsgType.Delimiter;
             Flags = MsgFlags.None;
+        }
+        /// <summary>
+        /// Set this Msg to be of type MsgType.Delimiter with no bits set within MsgFlags.
+        /// </summary>
+        public void InitError(SocketError error)
+        {
+            MsgType = MsgType.Error;
+            Flags = MsgFlags.None;
+            SocketError = error;
         }
 
         #endregion

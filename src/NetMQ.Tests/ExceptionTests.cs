@@ -2,7 +2,7 @@
 
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using Xunit;
+using NUnit.Framework;
 
 // ReSharper disable InconsistentNaming
 
@@ -10,7 +10,7 @@ namespace NetMQ.Tests
 {
     public class ExceptionTests
     {
-        [Fact]
+        [Test]
         public void Serialisation()
         {
             RoundTrip(NetMQException.Create("Hello", ErrorCode.BaseErrorNumber));
@@ -24,76 +24,76 @@ namespace NetMQ.Tests
             RoundTrip(new FiniteStateMachineException("Hello"));
         }
 
-        [Fact]
+        [Test]
         public void Create()
         {
             var before = NetMQException.Create("Hello", ErrorCode.BaseErrorNumber);
-            Assert.Equal(ErrorCode.BaseErrorNumber, before.ErrorCode);
-            Assert.Equal("Hello", before.Message);
+             Assert.AreEqual(ErrorCode.BaseErrorNumber, before.ErrorCode);
+             Assert.AreEqual("Hello", before.Message);
         }
 
-        [Fact]
+        [Test]
         public void AddressAlreadyInUseException()
         {
             var before = new AddressAlreadyInUseException("Hello");
-            Assert.Equal(ErrorCode.AddressAlreadyInUse, before.ErrorCode);
-            Assert.Equal("Hello", before.Message);
+             Assert.AreEqual(ErrorCode.AddressAlreadyInUse, before.ErrorCode);
+             Assert.AreEqual("Hello", before.Message);
         }
 
-        [Fact]
+        [Test]
         public void EndpointNotFoundException()
         {
             var before = new EndpointNotFoundException("Hello");
-            Assert.Equal(ErrorCode.EndpointNotFound, before.ErrorCode);
-            Assert.Equal("Hello", before.Message);
+             Assert.AreEqual(ErrorCode.EndpointNotFound, before.ErrorCode);
+             Assert.AreEqual("Hello", before.Message);
         }
 
-        [Fact]
+        [Test]
         public void TerminatingException()
         {
             var before = new TerminatingException("Hello");
-            Assert.Equal(ErrorCode.ContextTerminated, before.ErrorCode);
-            Assert.Equal("Hello", before.Message);
+             Assert.AreEqual(ErrorCode.ContextTerminated, before.ErrorCode);
+             Assert.AreEqual("Hello", before.Message);
         }
 
-        [Fact]
+        [Test]
         public void InvalidException()
         {
             var before = new InvalidException("Hello");
-            Assert.Equal(ErrorCode.Invalid, before.ErrorCode);
-            Assert.Equal("Hello", before.Message);
+             Assert.AreEqual(ErrorCode.Invalid, before.ErrorCode);
+             Assert.AreEqual("Hello", before.Message);
         }
 
-        [Fact]
+        [Test]
         public void FaultException()
         {
             var before = new FaultException("Hello");
-            Assert.Equal(ErrorCode.Fault, before.ErrorCode);
-            Assert.Equal("Hello", before.Message);
+             Assert.AreEqual(ErrorCode.Fault, before.ErrorCode);
+             Assert.AreEqual("Hello", before.Message);
         }
 
-        [Fact]
+        [Test]
         public void ProtocolNotSupportedException()
         {
             var before = new ProtocolNotSupportedException("Hello");
-            Assert.Equal(ErrorCode.ProtocolNotSupported, before.ErrorCode);
-            Assert.Equal("Hello", before.Message);
+             Assert.AreEqual(ErrorCode.ProtocolNotSupported, before.ErrorCode);
+             Assert.AreEqual("Hello", before.Message);
         }
 
-        [Fact]
+        [Test]
         public void HostUnreachableException()
         {
             var before = new HostUnreachableException("Hello");
-            Assert.Equal(ErrorCode.HostUnreachable, before.ErrorCode);
-            Assert.Equal("Hello", before.Message);
+             Assert.AreEqual(ErrorCode.HostUnreachable, before.ErrorCode);
+             Assert.AreEqual("Hello", before.Message);
         }
 
-        [Fact]
+        [Test]
         public void FiniteStateMachineException()
         {
             var before = new FiniteStateMachineException("Hello");
-            Assert.Equal(ErrorCode.FiniteStateMachine, before.ErrorCode);
-            Assert.Equal("Hello", before.Message);
+             Assert.AreEqual(ErrorCode.FiniteStateMachine, before.ErrorCode);
+             Assert.AreEqual("Hello", before.Message);
         }
 
         #region Helpers
@@ -101,8 +101,8 @@ namespace NetMQ.Tests
         private static void RoundTrip(NetMQException before)
         {
             var after = Clone(before);
-            Assert.Equal(before.ErrorCode, after.ErrorCode);
-            Assert.Equal(before.Message, after.Message);
+             Assert.AreEqual(before.ErrorCode, after.ErrorCode);
+             Assert.AreEqual(before.Message, after.Message);
         }
 
         private static T Clone<T>(T source)

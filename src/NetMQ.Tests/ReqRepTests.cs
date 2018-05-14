@@ -1,15 +1,15 @@
 ﻿using NetMQ.Sockets;
-using Xunit;
+using NUnit.Framework;
 
 namespace NetMQ.Tests
 {
-    public class ReqRepTests : IClassFixture<CleanupAfterFixture>
+    public class ReqRepTests 
     {
         public ReqRepTests() => NetMQConfig.Cleanup();
 
         [Theory]
-        [InlineData("tcp://localhost")]
-        [InlineData("tcp://127.0.0.1")]
+        [TestCase("tcp://localhost")]
+        [TestCase("tcp://127.0.0.1")]
         public void SimpleReqRep(string address)
         {
             using (var rep = new ResponseSocket())
@@ -20,15 +20,15 @@ namespace NetMQ.Tests
 
                 req.SendFrame("Hi");
 
-                Assert.Equal(new[] { "Hi" }, rep.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "Hi" }, rep.ReceiveMultipartStrings());
 
                 rep.SendFrame("Hi2");
 
-                Assert.Equal(new[] { "Hi2" }, req.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "Hi2" }, req.ReceiveMultipartStrings());
             }
         }
 
-        [Fact]
+        [Test]
         public void SendingTwoRequestsInARow()
         {
             using (var rep = new ResponseSocket())
@@ -45,7 +45,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void ReceiveBeforeSending()
         {
             using (var rep = new ResponseSocket())
@@ -58,7 +58,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void SendMessageInResponseBeforeReceiving()
         {
             using (var rep = new ResponseSocket())
@@ -71,7 +71,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void SendMultipartMessage()
         {
             using (var rep = new ResponseSocket())
@@ -82,11 +82,11 @@ namespace NetMQ.Tests
 
                 req.SendMoreFrame("Hello").SendFrame("World");
 
-                Assert.Equal(new[] { "Hello", "World" }, rep.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "Hello", "World" }, rep.ReceiveMultipartStrings());
 
                 rep.SendMoreFrame("Hello").SendFrame("Back");
 
-                Assert.Equal(new[] { "Hello", "Back" }, req.ReceiveMultipartStrings());
+                 Assert.AreEqual(new[] { "Hello", "Back" }, req.ReceiveMultipartStrings());
             }
         }
     }

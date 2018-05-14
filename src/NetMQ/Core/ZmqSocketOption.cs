@@ -296,6 +296,15 @@ namespace NetMQ.Core
         /// </remarks>
         ThrowDelimiter = 51,
         /// <summary>
+        /// 创建连接失败时是否通知
+        /// </summary>
+        NotifyWhenConnectedFail = 52,
+
+        /// <summary>
+        /// 连接或监听异常时是否通知
+        /// </summary>
+        NotifyWhenConnectOrListenThrowException = 53,
+        /// <summary>
         /// Specifies the byte-order: big-endian, vs little-endian.
         /// </summary>
         Endian = 1000,

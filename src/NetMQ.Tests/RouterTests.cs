@@ -1,5 +1,5 @@
 ﻿using System;
-using Xunit;
+using NUnit.Framework;
 using System.Text;
 using System.Threading;
 using NetMQ.Sockets;
@@ -8,11 +8,11 @@ using NetMQ.Sockets;
 
 namespace NetMQ.Tests
 {
-    public class RouterTests : IClassFixture<CleanupAfterFixture>
+    public class RouterTests 
     {
         public RouterTests() => NetMQConfig.Cleanup();
 
-        [Fact]
+        [Test]
         public void Mandatory()
         {
             using (var router = new RouterSocket())
@@ -27,8 +27,8 @@ namespace NetMQ.Tests
 
                     dealer.SendFrame("Hello");
 
-                    Assert.Equal("1", router.ReceiveFrameString());
-                    Assert.Equal("Hello", router.ReceiveFrameString());
+                     Assert.AreEqual("1", router.ReceiveFrameString());
+                     Assert.AreEqual("Hello", router.ReceiveFrameString());
                 }
 
                 Thread.Sleep(100);
@@ -37,7 +37,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void ReceiveReadyDot35Bug()
         {
             // In .NET 3.5, we saw an issue where ReceiveReady would be raised every second despite nothing being received
@@ -50,7 +50,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void TwoMessagesFromRouterToDealer()
         {
             using (var server = new RouterSocket())
@@ -82,7 +82,7 @@ namespace NetMQ.Tests
                 client.SendFrame(request);
 
                 byte[] serverId = server.ReceiveFrameBytes();
-                Assert.Equal(request, server.ReceiveFrameString());
+                 Assert.AreEqual(request, server.ReceiveFrameString());
 
                 // two messages in a row, not frames
                 server.SendMoreFrame(serverId).SendFrame(response);
@@ -92,7 +92,7 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
+        [Test]
         public void Handover()
         {
             using (var router = new RouterSocket())
@@ -105,7 +105,7 @@ namespace NetMQ.Tests
                 dealer1.SendMoreFrame("Hello").SendFrame("World");
 
                 var identity = router.ReceiveFrameString();
-                Assert.Equal("ID", identity);
+                 Assert.AreEqual("ID", identity);
 
                 using (var dealer2 = new DealerSocket())
                 {
@@ -114,19 +114,19 @@ namespace NetMQ.Tests
 
                     // We have new peer which should take over, however we are still reading a message
                     var message = router.ReceiveFrameString();
-                    Assert.Equal("Hello", message);
+                     Assert.AreEqual("Hello", message);
                     message = router.ReceiveFrameString();
-                    Assert.Equal("World", message);
+                     Assert.AreEqual("World", message);
 
                     dealer2.SendMoreFrame("Hello").SendFrame("World");
                     identity = router.ReceiveFrameString();
-                    Assert.Equal("ID", identity);
+                     Assert.AreEqual("ID", identity);
 
                     message = router.ReceiveFrameString();
-                    Assert.Equal("Hello", message);
+                     Assert.AreEqual("Hello", message);
 
                     message = router.ReceiveFrameString();
-                    Assert.Equal("World", message);
+                     Assert.AreEqual("World", message);
                 }
             }
         }

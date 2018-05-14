@@ -4,7 +4,10 @@ using System.Text;
 
 namespace NetMQ
 {
-    public enum NetMQMessageCommondType
+    /// <summary>
+    /// NetMQMessage的类型，上层应用需要根据该字段判断获取到的是数据还是其他信息。
+    /// </summary>
+    public enum NetMQMessageType
     {
         /// <summary>
         /// 错误
@@ -17,6 +20,10 @@ namespace NetMQ
         /// <summary>
         /// 清理命令，需要清理上层会话数据
         /// </summary>
-        Clear = 10,
+        DisConnected = 10,
+        /// <summary>
+        /// socket错误
+        /// </summary>
+        SocketError = 100,
     }
 }

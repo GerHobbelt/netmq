@@ -1,10 +1,10 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 
 namespace NetMQ.Tests.InProcActors.ExceptionShimExample
 {
     public class ExceptionShimActorTests
     {
-        [Fact]
+        [Test]
         public void ShimExceptionTest()
         {            
             using (var actor = NetMQActor.Create(new ExceptionShimHandler()))
@@ -12,7 +12,7 @@ namespace NetMQ.Tests.InProcActors.ExceptionShimExample
                 actor.SendMoreFrame("SOME_COMMAND");
                 actor.SendFrame("Whatever");
 
-                Assert.Equal(
+                 Assert.AreEqual(
                     "Error: Exception occurred Actors Shim threw an Exception",
                     actor.ReceiveFrameString());
             }

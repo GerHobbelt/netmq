@@ -234,12 +234,44 @@ namespace NetMQ.Core.Transports.Tcp
                     socketError == SocketError.NetworkDown || socketError == SocketError.AccessDenied ||
                     socketError == SocketError.OperationAborted)
                 {
-                    if (m_options.ReconnectIvl >= 0)
-                        AddReconnectTimer();
+                    if (m_options.NotifyWhenConnectedFail)
+                    {
+                        Msg msg = new Msg();
+                        msg.SetAddress(m_addr.Resolved.Address);
+                        msg.InitError(socketError);
+                        m_session.PushMsg(ref msg);
+                        m_session.Flush();
+                    }
+                    else
+                    {
+                        if (m_options.ReconnectIvl >= 0)
+                        {
+                            AddReconnectTimer();
+                        }
+                        else
+                        {
+                            Msg msg = new Msg();
+                            msg.SetAddress(m_addr.Resolved.Address);
+                            msg.InitError(socketError);
+                            m_session.PushMsg(ref msg);
+                            m_session.Flush();
+                        }
+                    }
                 }
                 else
                 {
-                    throw NetMQException.Create(socketError);
+                    //this exception will cause the app crash , we should notify the upward 
+                    if (m_options.NotifyWhenConnectOrListenThrowException)
+                    {
+                        Msg msg = new Msg();
+                        msg.InitError(socketError);
+                        m_session.PushMsg(ref msg);
+                        m_session.Flush();
+                    }
+                    else
+                    {
+                        throw NetMQException.Create(socketError);
+                    }
                 }
             }
             else

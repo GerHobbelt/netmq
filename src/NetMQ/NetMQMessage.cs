@@ -327,10 +327,12 @@ namespace NetMQ
         /// 设置错误
         /// </summary>
         /// <param name="errorInfo"></param>
-        public void SetError(string errorInfo)
+        /// <param name="encoding">编码，默认为Encoding.ASCII(</param>
+        public void SetError(string errorInfo, Encoding encoding = null)
         {
+            if (encoding == null) encoding = Encoding.ASCII;
             MessageType = NetMQMessageType.Error ;
-            this.Append(errorInfo);
+            this.Append(errorInfo, encoding);
         }
         /// <summary>
         /// socket错误

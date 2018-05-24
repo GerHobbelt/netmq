@@ -49,7 +49,7 @@ namespace NetMQ
         /// </summary>
         /// <param name="frames">a collection of NetMQFrames, to form the frame-stack</param>
         /// <exception cref="ArgumentNullException">The value of 'frames' cannot be null. </exception>
-        public NetMQMessage([NotNull] IEnumerable<NetMQFrame> frames)
+        public NetMQMessage([NotNull] IEnumerable<NetMQFrame> frames) : this()
         {
             if (frames == null)
                 throw new ArgumentNullException(nameof(frames));
@@ -62,12 +62,16 @@ namespace NetMQ
         /// </summary>
         /// <param name="buffers">a collection of byte-array buffers, to form the frame-stack</param>
         /// <exception cref="ArgumentNullException">The value of 'buffers' cannot be null. </exception>
-        public NetMQMessage([NotNull] IEnumerable<byte[]> buffers)
+        public NetMQMessage([NotNull] IEnumerable<byte[]> buffers) : this()
         {
             if (buffers == null)
                 throw new ArgumentNullException(nameof(buffers));
 
             m_frames = buffers.Select(buf => new NetMQFrame(buf)).ToList();
+        }
+        public NetMQMessage()
+        {
+            MessageType = NetMQMessageType.Data;
         }
 
         #endregion
@@ -319,7 +323,7 @@ namespace NetMQ
         {
             m_frames.Clear();
         }
-        internal void SetAddress(IPEndPoint address)
+        public void SetAddress(IPEndPoint address)
         {
             Address = address;
         }

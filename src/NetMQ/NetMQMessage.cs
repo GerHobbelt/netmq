@@ -42,6 +42,7 @@ namespace NetMQ
         public NetMQMessage(int expectedFrameCount = 4)
         {
             m_frames = new List<NetMQFrame>(expectedFrameCount);
+            MessageType = NetMQMessageType.Data;
         }
 
         /// <summary>
@@ -68,10 +69,6 @@ namespace NetMQ
                 throw new ArgumentNullException(nameof(buffers));
 
             m_frames = buffers.Select(buf => new NetMQFrame(buf)).ToList();
-        }
-        public NetMQMessage()
-        {
-            MessageType = NetMQMessageType.Data;
         }
 
         #endregion

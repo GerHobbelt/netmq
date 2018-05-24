@@ -1,6 +1,7 @@
 ﻿using NetMQ.Sockets;
 using System.Threading;
 using NUnit.Framework;
+using System;
 
 namespace NetMQ.Tests
 {
@@ -45,37 +46,37 @@ namespace NetMQ.Tests
         [Test(Description ="服务端主动关闭连接测试")]
         public void ProactiveCloseConnect()
         {
-            var server = new StreamSocket();
-            //响应客户端完成时主动关闭连接
-            server.Options.ProactiveCloseConnect = true;
-            var port = 10010;
-            server.Bind("tcp://*:" + port);
-            using (var client = new StreamSocket())
+            using (var server = new StreamSocket())
             {
-                client.Connect("tcp://127.0.0.1:" + port);
+                //响应客户端完成时主动关闭连接
+                server.Options.ProactiveCloseConnect = true;
+                var port = 10010;
+                server.Bind("tcp://*:" + port);
+                using (var client = new StreamSocket())
+                {
+                    client.Connect("tcp://127.0.0.1:" + port);
+                    client.Options.NotifyWhenConnectedFail = true;
+                    byte[] clientId = client.Options.Identity;
 
-                byte[] clientId = client.Options.Identity;
+                    const string request = "GET /\r\n";
 
-                const string request = "GET /\r\n";
-
-                const string response = "HTTP/1.0 200 OK\r\n" +
+                    const string response = "HTTP/1.0 200 OK\r\n" +
                         "Content-Type: text/plain\r\n" +
                         "\r\n" +
                         "Hello, World!";
 
-                client.SendMoreFrame(clientId).SendFrame(request);
+                    client.SendMoreFrame(clientId).SendFrame(request);
 
-                NetMQMessage reqMessage = server.ReceiveMultipartMessage();
-                 Assert.AreEqual(reqMessage.Address.ToString() , client.Options.LocalEndpoint);
+                    NetMQMessage reqMessage = server.ReceiveMultipartMessage();
+                    Assert.AreEqual(reqMessage.Address.ToString(), client.Options.LocalEndpoint);
 
-                 Assert.AreEqual(request ,reqMessage.Last.ConvertToString());
+                    Assert.AreEqual(request, reqMessage.Last.ConvertToString());
 
-                server.SendMoreFrame(reqMessage.First.Buffer).SendFrame(response);
+                    server.SendMoreFrame(reqMessage.First.Buffer).SendFrame(response);
 
-                var respMessage =  client.ReceiveMultipartMessage();
-                Thread.Sleep(1000);
-                //连接主动断开，自动重连，地址应该变了
-                Assert.AreNotEqual(reqMessage.Address.ToString(), client.Options.LocalEndpoint);
+                    var respMessage =  client.ReceiveMultipartMessage();
+                    Assert.AreEqual(respMessage.MessageType, NetMQMessageType.Data);
+                }
             }
         }
 

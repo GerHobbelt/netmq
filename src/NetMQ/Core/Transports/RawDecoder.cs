@@ -62,7 +62,7 @@ namespace NetMQ.Core.Transports
             try
             {
 
-                bool isMessagedPushed = m_msgSink.PushMsg(ref m_inProgress);
+                bool isMessagedPushed = m_msgSink.PushMsg(ref m_inProgress, true);
 
                 if (isMessagedPushed)
                 {

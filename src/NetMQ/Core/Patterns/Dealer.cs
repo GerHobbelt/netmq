@@ -71,7 +71,7 @@ namespace NetMQ.Core.Patterns
         /// Create a new Dealer socket that holds the prefetched message.
         /// </summary>
         public Dealer([NotNull] Ctx parent, int threadId, int socketId)
-            : base(parent, threadId, socketId)
+            : base(parent, threadId, socketId, null)
         {
             m_prefetched = false;
             m_options.SocketType = ZmqSocketType.Dealer;

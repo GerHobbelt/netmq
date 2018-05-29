@@ -148,7 +148,7 @@ namespace NetMQ.Core.Patterns
         /// <param name="threadId">the integer thread-id value</param>
         /// <param name="socketId">the integer socket-id value</param>
         public Router([NotNull] Ctx parent, int threadId, int socketId)
-            : base(parent, threadId, socketId)
+            : base(parent, threadId, socketId, null)
         {
             m_nextPeerId = s_random.Next();
             m_options.SocketType = ZmqSocketType.Router;

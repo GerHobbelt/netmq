@@ -33,7 +33,6 @@ namespace NetMQ.Core.Patterns
                 : base(ioThread, connect, socket, options, addr)
             {}
         }
-
         public Sub([NotNull] Ctx parent, int threadId, int socketId)
             : base(parent, threadId, socketId)
         {

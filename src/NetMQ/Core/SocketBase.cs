@@ -96,17 +96,20 @@ namespace NetMQ.Core
         /// <summary>The tcp port that was bound to, if any.</summary>
         private int m_port;
 
+        public NetMQSocket TopSocket { get; private set; }
         /// <summary>
         /// Create a new SocketBase within the given Ctx, with the specified thread-id and socket-id.
         /// </summary>
         /// <param name="parent">the Ctx context that this socket will live within</param>
         /// <param name="threadId">the id of the thread upon which this socket will execute</param>
         /// <param name="socketId">the integer id for the new socket</param>
-        protected SocketBase([NotNull] Ctx parent, int threadId, int socketId)
+        /// <param name="socket">上层的socket对象，当接收到数据的时候，保存到ctx的列表中，上层可以直接获取进行处理</param>
+        protected SocketBase([NotNull] Ctx parent, int threadId, int socketId, NetMQSocket socket)
             : base(parent, threadId)
         {
             m_options.SocketId = socketId;
             m_mailbox = new Mailbox("socket-" + socketId);
+            TopSocket = socket;
         }
 
         // Note: Concrete algorithms for the x- methods are to be defined by
@@ -153,9 +156,10 @@ namespace NetMQ.Core
         /// <param name="parent">the parent context</param>
         /// <param name="threadId">the thread for this new socket to run on</param>
         /// <param name="socketId">an integer id for this socket</param>
+        /// <param name="socket"></param>
         /// <exception cref="InvalidException">The socket type must be valid.</exception>
         [NotNull]
-        public static SocketBase Create(ZmqSocketType type, [NotNull] Ctx parent, int threadId, int socketId)
+        public static SocketBase Create(ZmqSocketType type, [NotNull] Ctx parent, int threadId, int socketId,NetMQSocket socket)
         {
             switch (type)
             {
@@ -182,7 +186,7 @@ namespace NetMQ.Core
                 case ZmqSocketType.Xsub:
                     return new XSub(parent, threadId, socketId);
                 case ZmqSocketType.Stream:
-                    return new Stream(parent, threadId, socketId);
+                    return new Stream(parent, threadId, socketId, socket);
                 default:
                     throw new InvalidException("SocketBase.Create called with invalid type of " + type);
             }
@@ -392,7 +396,10 @@ namespace NetMQ.Core
             // the generic option parser.
             return m_options.GetSocketOption(option);
         }
-
+        public X GetSocketOptionX<X>(ZmqSocketOption option)
+        {
+            return (X)GetSocketOptionX(option);
+        }
         /// <summary>
         /// Bind this socket to the given address.
         /// </summary>
@@ -1357,7 +1364,7 @@ namespace NetMQ.Core
             // Register events to monitor
             m_monitorEvents = events;
 
-            m_monitorSocket = Ctx.CreateSocket(ZmqSocketType.Pair);
+            m_monitorSocket = Ctx.CreateSocket(ZmqSocketType.Pair, this.TopSocket);
 
             // Never block context termination on pending event messages
             const int linger = 0;

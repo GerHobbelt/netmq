@@ -32,7 +32,7 @@ namespace NetMQ.Core.Patterns
                 : base(ioThread, connect, socket, options, addr)
             {}
         }
-
+        
         public Pub([NotNull] Ctx parent, int threadId, int socketId)
             : base(parent, threadId, socketId)
         {

@@ -562,6 +562,12 @@ namespace NetMQ.Core
                 msg.InitDelimiter();
                 m_outboundPipe.Write(ref msg, false);
                 Flush();
+                var sessionBase = this.m_parent as SessionBase;
+                if (sessionBase != null &&
+                    (bool)sessionBase.Socket.GetSocketOptionX(ZmqSocketOption.ThrowDelimiter))
+                {
+                    SendCanRead(sessionBase.Socket.TopSocket);
+                }
             }
         }
 

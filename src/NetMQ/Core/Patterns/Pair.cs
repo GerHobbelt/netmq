@@ -34,9 +34,9 @@ namespace NetMQ.Core.Patterns
         }
 
         private Pipe m_pipe;
-
+        
         public Pair([NotNull] Ctx parent, int threadId, int socketId)
-            : base(parent, threadId, socketId)
+            : base(parent, threadId, socketId, null)
         {
             m_options.SocketType = ZmqSocketType.Pair;
         }

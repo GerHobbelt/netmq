@@ -94,7 +94,7 @@ namespace NetMQ.Core.Patterns
         }
 
         public XSub([NotNull] Ctx parent, int threadId, int socketId)
-            : base(parent, threadId, socketId)
+            : base(parent, threadId, socketId, null)
         {
             m_options.SocketType = ZmqSocketType.Xsub;
             m_hasMessage = false;

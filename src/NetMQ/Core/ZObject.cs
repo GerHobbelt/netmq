@@ -180,6 +180,15 @@ namespace NetMQ.Core
         {
             SendCommand(new Command(destination, CommandType.ActivateRead));
         }
+        protected void SendCanRead(NetMQSocket socket)
+        {
+            m_ctx.RecordCanReadNetMQSocket(socket);
+        }
+        protected void SendReadCompleted(NetMQSocket socket)
+        {
+            m_ctx.SendReadCompleted(socket);
+        }
+        
 
         protected void SendActivateWrite([NotNull] Pipe destination, long msgsRead)
         {

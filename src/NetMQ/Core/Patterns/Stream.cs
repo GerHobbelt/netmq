@@ -100,9 +100,8 @@ namespace NetMQ.Core.Patterns
         /// algorithm. This value is the next ID to use (if not used already).
         /// </summary>
         private int m_nextPeerId;
-
-        public Stream([NotNull] Ctx parent, int threadId, int socketId)
-            : base(parent, threadId, socketId)
+        public Stream([NotNull] Ctx parent, int threadId, int socketId, NetMQSocket socket)
+            : base(parent, threadId, socketId, socket)
         {
             m_prefetched = false;
             m_identitySent = false;
@@ -309,11 +308,13 @@ namespace NetMQ.Core.Patterns
                 msg.InitPool(pipe[0].Identity.Length);
                 msg.Put(pipe[0].Identity, 0, pipe[0].Identity.Length);
                 msg.InitDelimiter();
+                SendCanRead(this.TopSocket);
                 //让上层知道连接断了
                 return true;
             }
             if (!isMessageAvailable)
             {
+                SendReadCompleted(this.TopSocket);
                 return false;
             }
 

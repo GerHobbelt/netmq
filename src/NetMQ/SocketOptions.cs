@@ -23,6 +23,7 @@ namespace NetMQ
         public SocketOptions([NotNull] NetMQSocket socket)
         {
             m_socket = socket;
+            MaxConnectedFailCount = 3;
         }
 
         /// <summary>
@@ -422,6 +423,15 @@ namespace NetMQ
             get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.NotifyWhenConnectedFail);
             set => m_socket.SetSocketOption(ZmqSocketOption.NotifyWhenConnectedFail, value);
         }
+        /// <summary>
+        /// 连接失败时是否通知，默认为3次，若设置为-1则和NotifyWhenConnectedFail设置为false是一样的。
+        /// </summary>
+        public int MaxConnectedFailCount
+        {
+            get => m_socket.GetSocketOptionX<int>(ZmqSocketOption.MaxConnectedFailCount);
+            set => m_socket.SetSocketOption(ZmqSocketOption.MaxConnectedFailCount, value);
+        }
+        
         /// <summary>
         /// 连接或监听异常时是否通知，默认为false，若设置为true，会设置NetMQMessage的MessageType为Error。
         /// </summary>

@@ -42,7 +42,6 @@ namespace NetMQ.Core.Patterns
         /// </summary>
         private bool m_messageBegins;
 
-        
         /// <summary>
         /// Create a new Req (Request) socket with the given parent Ctx, thread and socket id.
         /// </summary>
@@ -191,9 +190,7 @@ namespace NetMQ.Core.Patterns
             }
 
             /// <exception cref="FaultException">ReqSession must be in a valid state when PushMsg is called.</exception>
-            /// <param name="noticeReadCompleted">save can read socket to ctx can read sockets</param>
-            /// <returns>true if the Msg was successfully sent</returns>
-            public override bool PushMsg(ref Msg msg, bool noticeReadCompleted = false)
+            public override bool PushMsg(ref Msg msg)
             {
                 // TODO the flags checks here don't check specific bits -- should they use HasMore instead? does this work with shared Msg objects?
 

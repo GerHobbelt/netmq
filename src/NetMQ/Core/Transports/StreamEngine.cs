@@ -791,7 +791,7 @@ namespace NetMQ.Core.Transports
             FeedAction(Action.ActivateOut, SocketError.Success, 0);
         }
 
-        public bool PushMsg(ref Msg msg, bool noticeReadCompleted = false)
+        public bool PushMsg(ref Msg msg)
         {
             Debug.Assert(m_options.SocketType == ZmqSocketType.Pub || m_options.SocketType == ZmqSocketType.Xpub);
 

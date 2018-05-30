@@ -18,8 +18,7 @@ namespace NetMQ.Tests
             using (var server = new StreamSocket())
             {
                 server.Options.ThrowDelimiter = true;
-                int port= 10001;
-                server.Bind("tcp://127.0.0.1:10001");
+                int port = server.BindRandomPort("tcp://*");
                 using (var client = new StreamSocket())
                 {
                     client.Connect("tcp://127.0.0.1:" + port);
@@ -29,18 +28,6 @@ namespace NetMQ.Tests
                 Assert.AreEqual(NetMQMessageType.DisConnected, reqMessage.MessageType);
             }
         }
-
-        private void Server_ReceiveReady(object sender, NetMQSocketEventArgs e)
-        {
-            NetMQSocket server = e.Socket;
-            NetMQMessage reqMessage =  server.ReceiveMultipartMessage();
-            Assert.AreEqual(2, reqMessage.FrameCount);
-            Assert.AreEqual(NetMQMessageType.Data, reqMessage.MessageType);
-            reqMessage = server.ReceiveMultipartMessage();
-            Assert.AreEqual(1, reqMessage.FrameCount);
-            Assert.AreEqual(NetMQMessageType.DisConnected, reqMessage.MessageType);
-        }
-
         [Test(Description = "连接断开通知")]
         public void DisConnectedNotifyTryReceiveMessageTypeTest()
         {
@@ -91,7 +78,6 @@ namespace NetMQ.Tests
             {
                 client.Connect("tcp://127.0.0.1:" + 12345);
                 client.Options.NotifyWhenConnectedFail = true;
-                client.Options.MaxConnectedFailCount = 1;
                 NetMQMessage reqMessage =  client.ReceiveMultipartMessage();
                 Assert.AreEqual(2, reqMessage.FrameCount);
                 Assert.AreEqual(NetMQMessageType.SocketError, reqMessage.MessageType);
@@ -107,7 +93,6 @@ namespace NetMQ.Tests
             {
                 client.Connect("tcp://127.0.0.1:" + 12345);
                 client.Options.NotifyWhenConnectedFail = true;
-                client.Options.MaxConnectedFailCount = 1;
 
                 NetMQMessage reqMessage = null;
                 if (client.TryReceiveMultipartMessage(TimeSpan.FromSeconds(3), ref reqMessage))

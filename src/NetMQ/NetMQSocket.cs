@@ -39,7 +39,7 @@ namespace NetMQ
         /// <param name="defaultAction"></param>
         internal NetMQSocket(ZmqSocketType socketType, string connectionString, DefaultAction defaultAction)
         {
-            m_socketHandle = NetMQConfig.Context.CreateSocket(socketType,this);
+            m_socketHandle = NetMQConfig.Context.CreateSocket(socketType);
             m_netMqSelector = new NetMQSelector();
             Options = new SocketOptions(this);
             m_socketEventArgs = new NetMQSocketEventArgs(this);

@@ -116,7 +116,6 @@ namespace NetMQ
         [NotNull]
         public NetMQFrame this[int index] => m_frames[index];
 
-        public object State { get; private set; }
         #endregion
 
         #region Appending frames
@@ -321,21 +320,9 @@ namespace NetMQ
         {
             m_frames.Clear();
         }
-        /// <summary>
-        /// 设置来源地址
-        /// </summary>
-        /// <param name="address"></param>
         public void SetAddress(IPEndPoint address)
         {
             Address = address;
-        }
-        /// <summary>
-        /// 设置状态，用于异步消息用
-        /// </summary>
-        /// <param name="state"></param>
-        public void SetState(object state)
-        {
-            State = state;
         }
         /// <summary>
         /// 设置错误

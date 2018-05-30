@@ -242,6 +242,7 @@ namespace NetMQ.Core
                 return false;
             }
             m_incompleteIn = msg.HasMore;
+
             return true;
         }
 
@@ -249,9 +250,8 @@ namespace NetMQ.Core
         /// Write the given Msg to the pipe.
         /// </summary>
         /// <param name="msg">the Msg to push to the pipe</param>
-        /// <param name="noticeReadCompleted">save can read socket to ctx can read sockets</param>
         /// <returns>true if the Msg was successfully sent</returns>
-        public virtual bool PushMsg(ref Msg msg, bool noticeReadCompleted = false)
+        public virtual bool PushMsg(ref Msg msg)
         {
             // First message to receive is identity (if required).
             if (!m_identityReceived)
@@ -273,7 +273,6 @@ namespace NetMQ.Core
             if (m_pipe != null && m_pipe.Write(ref msg))
             {
                 msg.InitEmpty();
-                if (this.m_socket.TopSocket != null) SendCanRead(this.m_socket.TopSocket);
                 return true;
             }
 

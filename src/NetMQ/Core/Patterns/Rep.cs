@@ -44,7 +44,6 @@ namespace NetMQ.Core.Patterns
         /// </summary>
         private bool m_requestBegins;
 
-
         public Rep([NotNull] Ctx parent, int threadId, int socketId)
             : base(parent, threadId, socketId)
         {

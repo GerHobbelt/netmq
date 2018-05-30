@@ -25,11 +25,10 @@
 	<IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyVersion>4.0.2.0</AssemblyVersion>
-    <FileVersion>4.0.2.0</FileVersion>
-    <Version>4.0.2.0</Version>
+    <AssemblyVersion>4.0.1.2</AssemblyVersion>
+    <FileVersion>4.0.1.2</FileVersion>
+    <Version>4.0.1.2</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>当接收到数据时，将NetMQSocket加到Ctx中，可通过GetCanReadSocket获取到当前可读socket。</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'uap10.0'">

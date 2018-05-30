@@ -40,7 +40,7 @@ namespace NetMQ.Core.Patterns
         private readonly LoadBalancer m_loadBalancer;
 
         public Push([NotNull] Ctx parent, int threadId, int socketId)
-            : base(parent, threadId, socketId, null)
+            : base(parent, threadId, socketId)
         {
             m_options.SocketType = ZmqSocketType.Push;
 

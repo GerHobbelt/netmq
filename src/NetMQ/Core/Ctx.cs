@@ -79,10 +79,7 @@ namespace NetMQ.Core
         /// will return ETERM then.
         /// </summary>
         private readonly List<SocketBase> m_sockets = new List<SocketBase>();
-        /// <summary>
-        /// ¿É¶Ásocket
-        /// </summary>
-        private readonly HashSet<NetMQSocket> m_canReadSockets = new HashSet<NetMQSocket>();
+
         /// <summary>
         /// List of unused thread slots.
         /// </summary>
@@ -172,17 +169,6 @@ namespace NetMQ.Core
         /// </summary>
         public const int ReaperTid = 1;
 
-        public List<NetMQSocket> GetCanReadSocket
-        {
-            get
-            {
-                lock (m_canReadSockets)
-                {
-                    return m_canReadSockets.ToList();
-                }
-
-            }
-        }
         /// <summary>
         /// This function is called when user invokes zmq_term. If there are
         /// no more sockets open it'll cause all the infrastructure to be shut
@@ -231,7 +217,6 @@ namespace NetMQ.Core
                 Debug.Assert(command.CommandType == CommandType.Done);
                 Monitor.Enter(m_slotSync);
             }
-
             Monitor.Exit(m_slotSync);
 
             // Deallocate the resources.
@@ -244,25 +229,6 @@ namespace NetMQ.Core
             m_reaper?.Destroy();
 
             m_termMailbox.Close();
-            lock(m_canReadSockets)
-            {
-                m_canReadSockets.Clear();
-            }
-        }
-
-        internal void RecordCanReadNetMQSocket(NetMQSocket socket)
-        {
-            lock(this.m_canReadSockets)
-            {
-                this.m_canReadSockets.Add(socket);
-            }
-        }
-        internal void SendReadCompleted(NetMQSocket socket)
-        {
-            lock (this.m_canReadSockets)
-            {
-                this.m_canReadSockets.Remove(socket);
-            }
         }
 
         public int IOThreadCount
@@ -298,7 +264,7 @@ namespace NetMQ.Core
         /// <exception cref="NetMQException">Maximum number of sockets reached.</exception>
         /// <exception cref="TerminatingException">The context (Ctx) must not be already terminating.</exception>
         [NotNull]
-        public SocketBase CreateSocket(ZmqSocketType type,NetMQSocket socket)
+        public SocketBase CreateSocket(ZmqSocketType type)
         {
             lock (m_slotSync)
             {
@@ -372,7 +338,7 @@ namespace NetMQ.Core
                 int socketId = Interlocked.Increment(ref s_maxSocketId);
 
                 // Create the socket and register its mailbox.
-                SocketBase s = SocketBase.Create(type, this, slot, socketId,socket);
+                SocketBase s = SocketBase.Create(type, this, slot, socketId);
 
                 m_sockets.Add(s);
                 m_slots[slot] = s.Mailbox;

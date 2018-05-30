@@ -116,7 +116,7 @@ namespace NetMQ.Core.Patterns
         }
 
         public XPub([NotNull] Ctx parent, int threadId, int socketId)
-            : base(parent, threadId, socketId, null)
+            : base(parent, threadId, socketId)
         {
             m_options.SocketType = ZmqSocketType.Xpub;
 

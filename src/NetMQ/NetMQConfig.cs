@@ -7,6 +7,14 @@ namespace NetMQ
     public static class NetMQConfig
     {
         private static TimeSpan s_linger;
+        /// <summary>
+        /// 当socket达到上限时，是否自动扩容
+        /// </summary>
+        private static bool s_autoDilate = true;
+        /// <summary>
+        /// 最大允许扩容的socket上限个数
+        /// </summary>
+        private static int s_maxAutoDilate = 8196;
 
         [CanBeNull] private static Ctx s_ctx;
         private static int s_threadPoolSize = Ctx.DefaultIOThreads;
@@ -138,6 +146,47 @@ namespace NetMQ
             }
         }
 
+        /// <summary>
+        /// 当socket达到上限时是否自动扩容
+        /// </summary>
+        public static bool AutoDilate
+        {
+            get
+            {
+                lock (s_sync)
+                {
+                    return s_autoDilate;
+                }
+            }
+            set
+            {
+                lock (s_sync)
+                {
+                    s_autoDilate = value;
+                }
+            }
+        }
+        /// <summary>
+        /// 当socket达到上限时是否自动扩容
+        /// </summary>
+        public static int MaxAutoDilate
+        {
+            get
+            {
+                lock (s_sync)
+                {
+                    return s_maxAutoDilate;
+                }
+            }
+            set
+            {
+                lock (s_sync)
+                {
+                    s_maxAutoDilate = value;
+                }
+            }
+        }
+        
         #region Obsolete
 
         /// <summary>

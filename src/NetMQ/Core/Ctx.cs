@@ -78,12 +78,19 @@ namespace NetMQ.Core
         /// we can notify the sockets when zmq_term() is called. The sockets
         /// will return ETERM then.
         /// </summary>
-        private readonly List<SocketBase> m_sockets = new List<SocketBase>();
-
+#if DEBUG
+        public readonly List<SocketBase> m_sockets = new List<SocketBase>(DefaultMaxSockets);
+#else
+        private readonly List<SocketBase> m_sockets = new List<SocketBase>(DefaultMaxSockets);
+#endif
         /// <summary>
         /// List of unused thread slots.
         /// </summary>
-        private readonly Stack<int> m_emptySlots = new Stack<int>();
+#if DEBUG
+        public readonly Stack<int> m_emptySlots = new Stack<int>(DefaultMaxSockets);
+#else
+        private readonly Stack<int> m_emptySlots = new Stack<int>(DefaultMaxSockets);
+#endif
 
         /// <summary>
         /// If true, zmq_init has been called but no socket has been created
@@ -319,17 +326,7 @@ namespace NetMQ.Core
                     string xMsg = $"Ctx.CreateSocket({type}), cannot create new socket while terminating.";
                     throw new TerminatingException(innerException: null, message: xMsg);
                 }
-
-                // If max_sockets limit was reached, return error.
-                if (m_emptySlots.Count == 0)
-                {
-#if DEBUG
-                    string xMsg = $"Ctx.CreateSocket({type}), max number of sockets {m_maxSockets} reached.";
-                    throw NetMQException.Create(xMsg, ErrorCode.TooManyOpenSockets);
-#else
-                    throw NetMQException.Create(ErrorCode.TooManyOpenSockets);
-#endif
-                }
+                CheckLimit(type);
 
                 // Choose a slot for the socket.
                 int slot = m_emptySlots.Pop();
@@ -349,6 +346,81 @@ namespace NetMQ.Core
             }
         }
 
+        private void CheckLimit(ZmqSocketType type)
+        {
+            // If max_sockets limit was reached, return error.
+            if (m_emptySlots.Count == 0)
+            {
+                if (!NetMQConfig.AutoDilate)
+                {
+#if DEBUG
+                    string xMsg = $"Ctx.CreateSocket({type}), max number of sockets {m_maxSockets} reached.";
+                    throw NetMQException.Create(xMsg, ErrorCode.TooManyOpenSockets);
+#else
+                        throw NetMQException.Create(ErrorCode.TooManyOpenSockets);
+#endif
+                }
+                else if (m_sockets.Count >= NetMQConfig.MaxAutoDilate)
+                {
+#if DEBUG
+                    string xMsg = $"Ctx.CreateSocket({type}), max number of sockets {NetMQConfig.MaxAutoDilate} reached.";
+                    throw NetMQException.Create(xMsg, ErrorCode.TooManyOpenSockets);
+#else
+                        throw NetMQException.Create(ErrorCode.TooManyOpenSockets);
+#endif
+
+                }
+                else
+                {
+                    if (m_maxSockets >= NetMQConfig.MaxAutoDilate)
+                    {
+#if DEBUG
+                        string xMsg = $"Ctx.CreateSocket({type}), max number of sockets {NetMQConfig.MaxAutoDilate} reached.";
+                        throw NetMQException.Create(xMsg, ErrorCode.TooManyOpenSockets);
+#else
+                        throw NetMQException.Create(ErrorCode.TooManyOpenSockets);
+#endif
+                    }
+                    //can dilate
+                    DilateSocket();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 扩容socket
+        /// </summary>
+        public void DilateSocket()
+        {
+            lock (m_slotSync)
+            {
+                int ios;
+                int mazmq;
+                lock (m_optSync)
+                {
+                    mazmq = m_maxSockets * 2;
+                    ios = m_ioThreadCount;
+                }
+                m_slotCount = mazmq + ios + 2;
+                IMailbox[] newSlots = new IMailbox[m_slotCount];
+                for (int i = 0; i < m_slots.Length; i ++)
+                {
+                    //原来的mailbox转移到新的里面
+                    newSlots[i] = m_slots[i];
+                }
+                // In the unused part of the slot array, create a list of empty slots.
+                for (int i = m_slotCount - 1; i >= m_slots.Length ; i--)
+                {
+                    m_emptySlots.Push(i);
+                    newSlots[i] = null;
+                }
+                m_slots = newSlots;
+                lock (m_optSync)
+                {
+                    m_maxSockets = mazmq;
+                }
+            }
+        }
         /// <summary>
         /// Destroy the given socket - which means to remove it from the list of active sockets,
         /// and add it to the list of unused sockets to be terminated.

@@ -25,10 +25,11 @@
 	<IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyVersion>4.0.1.7</AssemblyVersion>
-    <FileVersion>4.0.1.7</FileVersion>
-    <Version>4.0.1.7</Version>
+    <AssemblyVersion>4.0.1.8</AssemblyVersion>
+    <FileVersion>4.0.1.8</FileVersion>
+    <Version>4.0.1.8</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReleaseNotes>支持socket客户端满了自动扩容</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'uap10.0'">

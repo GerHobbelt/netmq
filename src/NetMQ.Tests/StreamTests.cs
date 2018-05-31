@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 
 using NetMQ.Sockets;
+using System.Threading;
 
 namespace NetMQ.Tests
 {
@@ -36,6 +37,67 @@ namespace NetMQ.Tests
 
                      Assert.AreEqual(clientId, client.ReceiveFrameBytes());
                      Assert.AreEqual(response, client.ReceiveFrameString());
+                }
+            }
+        }
+        [Test]
+        public void BigPackageStreamToStream()
+        {
+            using (var server = new StreamSocket())
+            {
+                server.Options.SendHighWatermark = -1;
+                server.Options.ReceiveHighWatermark = -1;
+                int port = 10021;
+                server.Bind("tcp://*:" + port);
+                using (var client = new StreamSocket())
+                {
+                    client.Options.SendHighWatermark = -1;
+                    client.Options.ReceiveHighWatermark = -1;
+                    client.Connect("tcp://*:" + port);
+
+                    byte[] clientId = client.Options.Identity;
+
+                    byte[] bytes =  new byte[1024*1024*8];
+                    for (int i = 0; i < 100; i++)
+                    {
+                        client.SendMoreFrame(clientId).SendFrame(bytes);
+                    }
+                    //等待入队
+                    Thread.Sleep(10000);
+                    int count = 0;
+                    long length = 0;
+                    while (count < 100)
+                    {
+                        NetMQMessage message = null;
+                        if (server.TryReceiveMultipartMessage(ref message))
+                        {
+                            server.SendMultipartMessage(message);
+                            length += message.Last.BufferSize;
+                            if (length >= 1024 * 1024 * 8)
+                            {
+                                count++;
+                                length = length % (1024 * 1024 * 8);
+                            }
+                        }
+                    }
+                    //等待入队
+                    Thread.Sleep(10000);
+                    length = 0;
+                    count = 0;
+                    while (count < 100)
+                    {
+                        NetMQMessage message = null;
+                        if (client.TryReceiveMultipartMessage(ref message))
+                        {
+                            length += message.Last.BufferSize;
+                            if (length >= 1024 * 1024 * 8)
+                            {
+                                count++;
+                                length = length % (1024 * 1024 * 8);
+                            }
+                        }
+                    }
+                    
                 }
             }
         }

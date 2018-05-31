@@ -86,6 +86,7 @@ namespace NetMQ.Core.Transports.Tcp
         /// </summary>
         private readonly SocketBase m_socket;
 
+        private int m_faildCount = 0;
         /// <summary>
         /// Create a new TcpConnector object.
         /// </summary>
@@ -234,15 +235,11 @@ namespace NetMQ.Core.Transports.Tcp
                     socketError == SocketError.NetworkDown || socketError == SocketError.AccessDenied ||
                     socketError == SocketError.OperationAborted)
                 {
-                    if (m_options.NotifyWhenConnectedFail)
-                    {
-                        Msg msg = new Msg();
-                        msg.SetAddress(m_addr.Resolved.Address);
-                        msg.InitError(socketError);
-                        m_session.PushMsg(ref msg);
-                        m_session.Flush();
-                    }
-                    else
+                    m_faildCount++;
+                    //配置连接失败通知且失败次数小于最大次数时。
+                    if (!m_options.NotifyWhenConnectedFail ||
+                        m_options.MaxConnectedFailCount < 0 ||
+                        m_faildCount <= m_options.MaxConnectedFailCount)
                     {
                         if (m_options.ReconnectIvl >= 0)
                         {
@@ -256,6 +253,14 @@ namespace NetMQ.Core.Transports.Tcp
                             m_session.PushMsg(ref msg);
                             m_session.Flush();
                         }
+                    }
+                    else
+                    {
+                        Msg msg = new Msg();
+                        msg.SetAddress(m_addr.Resolved.Address);
+                        msg.InitError(socketError);
+                        m_session.PushMsg(ref msg);
+                        m_session.Flush();
                     }
                 }
                 else

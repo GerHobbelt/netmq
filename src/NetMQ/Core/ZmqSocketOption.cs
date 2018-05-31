@@ -305,6 +305,11 @@ namespace NetMQ.Core
         /// </summary>
         NotifyWhenConnectOrListenThrowException = 53,
         /// <summary>
+        /// 连接或监听异常时是否通知
+        /// </summary>
+        MaxConnectedFailCount = 54,
+
+        /// <summary>
         /// Specifies the byte-order: big-endian, vs little-endian.
         /// </summary>
         Endian = 1000,

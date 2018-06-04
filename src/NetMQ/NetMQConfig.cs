@@ -12,9 +12,9 @@ namespace NetMQ
         /// </summary>
         private static bool s_autoDilate = true;
         /// <summary>
-        /// 最大允许扩容的socket上限个数
+        /// 最大允许扩容的socket上限个数，默认2048
         /// </summary>
-        private static int s_maxAutoDilate = 8196;
+        private static int s_maxAutoDilate = 2048;
 
         [CanBeNull] private static Ctx s_ctx;
         private static int s_threadPoolSize = Ctx.DefaultIOThreads;
@@ -136,6 +136,8 @@ namespace NetMQ
             }
             set
             {
+                if (value > 8192)
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "Must be lower than 8192");
                 lock (s_sync)
                 {
                     s_maxSockets = value;
@@ -180,6 +182,8 @@ namespace NetMQ
             }
             set
             {
+                if (value > 8192)
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "Must be lower than 8192");
                 lock (s_sync)
                 {
                     s_maxAutoDilate = value;

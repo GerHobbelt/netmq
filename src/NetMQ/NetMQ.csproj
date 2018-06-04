@@ -25,11 +25,11 @@
 	<IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyVersion>4.0.1.8</AssemblyVersion>
-    <FileVersion>4.0.1.8</FileVersion>
-    <Version>4.0.1.8</Version>
+    <AssemblyVersion>4.0.1.10</AssemblyVersion>
+    <FileVersion>4.0.1.10</FileVersion>
+    <Version>4.0.1.10</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>支持socket客户端满了自动扩容</PackageReleaseNotes>
+    <PackageReleaseNotes>为了性能，最大socket数量不能超过8196</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'uap10.0'">

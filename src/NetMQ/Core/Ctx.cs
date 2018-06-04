@@ -154,7 +154,7 @@ namespace NetMQ.Core
         /// <summary>
         /// The maximum number of sockets that can be opened at the same time.
         /// </summary>
-        private int m_maxSockets = DefaultMaxSockets;
+        private int m_maxSockets = NetMQConfig.MaxSockets;
 
         /// <summary>
         /// The number of I/O threads to launch.
@@ -257,6 +257,8 @@ namespace NetMQ.Core
             {
                 if (value <= 0)
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Must be greater than zero");
+                if (value > 8192)
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "Must be lower than 8192");
                 lock (m_optSync)
                     m_maxSockets = value;
             }

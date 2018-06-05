@@ -362,7 +362,7 @@ namespace NetMQ.Core
                         throw NetMQException.Create(ErrorCode.TooManyOpenSockets);
 #endif
                 }
-                else if (m_sockets.Count >= NetMQConfig.MaxAutoDilate)
+                else if (m_sockets.Count > NetMQConfig.MaxAutoDilate)
                 {
 #if DEBUG
                     string xMsg = $"Ctx.CreateSocket({type}), max number of sockets {NetMQConfig.MaxAutoDilate} reached.";
@@ -374,7 +374,7 @@ namespace NetMQ.Core
                 }
                 else
                 {
-                    if (m_maxSockets >= NetMQConfig.MaxAutoDilate)
+                    if (m_maxSockets > NetMQConfig.MaxAutoDilate)
                     {
 #if DEBUG
                         string xMsg = $"Ctx.CreateSocket({type}), max number of sockets {NetMQConfig.MaxAutoDilate} reached.";

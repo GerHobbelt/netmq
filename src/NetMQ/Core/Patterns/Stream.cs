@@ -255,7 +255,8 @@ namespace NetMQ.Core.Patterns
             {
                 if (msg.Size == 0)
                 {
-                    m_currentOut.Terminate(false);
+                    //the data size is null return true , not process.
+                    //m_currentOut.Terminate(false);
                     m_currentOut = null;
                     return true;
                 }

@@ -178,8 +178,6 @@ namespace NetMQ.Tests
                 socket.Options.DelayAttachOnConnect = true;
                 Assert.AreEqual(true, socket.Options.DelayAttachOnConnect);
 
-                socket.Options.RouterRawSocket = true;
-                //                 Assert.AreEqual(true, socket.Options.RouterRawSocket);
 
                 socket.Options.Endian = Endianness.Little;
                 Assert.AreEqual(Endianness.Little, socket.Options.Endian);

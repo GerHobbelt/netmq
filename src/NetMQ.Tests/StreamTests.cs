@@ -9,6 +9,28 @@ namespace NetMQ.Tests
     {
         public StreamTests() => NetMQConfig.Cleanup();
 
+        [Test(Description = "发送空包测试")]
+        public void SendEmptyDataTest()
+        {
+            using (var server = new StreamSocket())
+            {
+                server.Options.ThrowDelimiter = true;
+                int port = server.BindRandomPort("tcp://*");
+                using (var client = new StreamSocket())
+                {
+                    client.Connect("tcp://127.0.0.1:" + port);
+                    client.SendMoreFrame(client.Options.Identity);
+                    client.SendFrame("test");
+                    NetMQMessage reqMessage = server.ReceiveMultipartMessage();
+                    reqMessage.RemoveFrame(reqMessage.Last);
+                    reqMessage.Append(new byte[] { });
+                    server.SendMultipartMessage(reqMessage);
+                    client.SendMoreFrame(client.Options.Identity);
+                    client.SendFrame("test");
+                    reqMessage = server.ReceiveMultipartMessage();
+                }
+            }
+        }
         [Test]
         public void StreamToStream()
         {

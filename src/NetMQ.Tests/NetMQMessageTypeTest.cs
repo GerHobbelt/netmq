@@ -51,10 +51,14 @@ namespace NetMQ.Tests
                 using (var client = new StreamSocket())
                 {
                     client.Connect("tcp://127.0.0.1:" + port);
+                    client.SendMoreFrame(client.Options.Identity);
+                    client.SendFrame("test");
                 }
-                NetMQMessage reqMessage = null;
+                NetMQMessage reqMessage = server.ReceiveMultipartMessage();
+                NetMQFrame identity = reqMessage.First;
                 if (server.TryReceiveMultipartMessage(TimeSpan.FromSeconds(3), ref reqMessage))
                 {
+                    Assert.AreEqual(identity, reqMessage.First);
                     Assert.AreEqual(1, reqMessage.FrameCount);
                     Assert.AreEqual(NetMQMessageType.DisConnected, reqMessage.MessageType);
                 }

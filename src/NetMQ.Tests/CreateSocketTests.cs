@@ -23,8 +23,6 @@ namespace NetMQ.Tests
         [TestCase(true, 2048)]
         [TestCase(true, 4096)]
         [TestCase(true, 8192)]
-        [TestCase(true, 10000)]
-        [TestCase(true, 20000)]
         public void DilateSocketTest(bool autoDilate,int maxSocketCount)
         {
             Assert.IsTrue(maxSocketCount >= 1024);

@@ -440,5 +440,26 @@ namespace NetMQ
             get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.NotifyWhenConnectOrListenThrowException);
             set => m_socket.SetSocketOption(ZmqSocketOption.NotifyWhenConnectOrListenThrowException, value);
         }
+        /// <summary>
+        /// If true, session reads all the pending messages from the pipe and
+        /// sends them to the network when socket is closed.
+        /// The default value is true.
+        /// </summary>
+        public bool DelayOnClose
+        {
+            get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.DelayOnClose);
+            set => m_socket.SetSocketOption(ZmqSocketOption.DelayOnClose, value);
+        }
+
+        /// <summary>
+        /// If true, socket reads all the messages from the pipe and delivers
+        /// them to the user when the peer terminates.
+        /// The default value is true.
+        /// </summary>
+        public bool DelayOnDisconnect
+        {
+            get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.DelayOnDisconnect);
+            set => m_socket.SetSocketOption(ZmqSocketOption.DelayOnDisconnect, value);
+        }
     }
 }

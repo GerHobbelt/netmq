@@ -452,6 +452,12 @@ namespace NetMQ.Core
                 case ZmqSocketOption.NotifyWhenConnectOrListenThrowException:
                     NotifyWhenConnectOrListenThrowException = (bool)optionValue;
                     break;
+                case ZmqSocketOption.DelayOnClose:
+                    DelayOnClose = (bool)optionValue;
+                    break;
+                case ZmqSocketOption.DelayOnDisconnect:
+                    DelayOnDisconnect = (bool)optionValue;
+                    break;
                 default:
                     throw new InvalidException("Options.SetSocketOption called with invalid ZmqSocketOption of " + option);
             }

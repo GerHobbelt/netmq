@@ -308,7 +308,19 @@ namespace NetMQ.Core
         /// 连接或监听异常时是否通知
         /// </summary>
         MaxConnectedFailCount = 54,
+        /// <summary>
+        /// If true, session reads all the pending messages from the pipe and
+        /// sends them to the network when socket is closed.
+        /// The default value is true.
+        /// </summary>
+        DelayOnClose ,
 
+        /// <summary>
+        /// If true, socket reads all the messages from the pipe and delivers
+        /// them to the user when the peer terminates.
+        /// The default value is true.
+        /// </summary>
+        DelayOnDisconnect,
         /// <summary>
         /// Specifies the byte-order: big-endian, vs little-endian.
         /// </summary>

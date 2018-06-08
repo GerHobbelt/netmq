@@ -25,11 +25,11 @@
 	<IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyVersion>4.0.1.12</AssemblyVersion>
-    <FileVersion>4.0.1.12</FileVersion>
-    <Version>4.0.1.12</Version>
+    <AssemblyVersion>4.0.1.13</AssemblyVersion>
+    <FileVersion>4.0.1.13</FileVersion>
+    <Version>4.0.1.13</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>修复达到最大允许socket创建会报错的问题</PackageReleaseNotes>
+    <PackageReleaseNotes>短连接时关闭后不等待才释放，否则会导致数据一直卡在发送，导致其他短链接数据不会接收处理</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'uap10.0'">

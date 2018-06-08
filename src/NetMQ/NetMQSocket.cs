@@ -387,7 +387,7 @@ namespace NetMQ
         /// <exception cref="ArgumentException"><paramref name="endpoint"/> cannot be empty or whitespace.</exception>
         /// <exception cref="ObjectDisposedException">This object is already disposed.</exception>
         /// <exception cref="ProtocolNotSupportedException">The protocol of <paramref name="endpoint"/> is not supported.</exception>
-        /// <exception cref="TerminatingException">The socket has been stopped.</exception>
+        /// <exception cref="TerminatingException">The socket has sbeen stopped.</exception>
         /// <exception cref="NetMQException">Maximum number of sockets reached.</exception>
         public void Monitor([NotNull] string endpoint, SocketEvents events = SocketEvents.All)
         {

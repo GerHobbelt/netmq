@@ -6,7 +6,7 @@
     <Version>4.0.0.0</Version>
     <PackageVersion>4.0.0.0</PackageVersion>
     <!--monoandroid60;xamarinios10-->
-    <TargetFrameworks>netstandard1.6;net40</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard1.6;net40</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>NetMQ</AssemblyName>
     <AssemblyOriginatorKeyFile>./NetMQ.snk</AssemblyOriginatorKeyFile>
@@ -59,6 +59,11 @@
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="AsyncIO" Version="0.1.61" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">

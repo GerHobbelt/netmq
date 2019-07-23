@@ -295,10 +295,6 @@ namespace NetMQ.Core
         /// </summary>
         public bool NotifyWhenConnectedFail { get; set; }
         /// <summary>
-        /// 连接失败时最大重试次数。
-        /// </summary>
-        public int MaxConnectedFailCount { get; set; }
-        /// <summary>
         /// 连接或监听异常时是否通知，默认为false，若设置为true，则会生成一个Msg放入管道中。会设置NetMQMessage的MessageType为Error。
         /// </summary>
         public bool NotifyWhenConnectOrListenThrowException { get; set; }
@@ -446,9 +442,6 @@ namespace NetMQ.Core
                 case ZmqSocketOption.NotifyWhenConnectedFail:
                     NotifyWhenConnectedFail = (bool)optionValue;
                     break;
-                case ZmqSocketOption.MaxConnectedFailCount:
-                    MaxConnectedFailCount = (int)optionValue;
-                    break;
                 case ZmqSocketOption.NotifyWhenConnectOrListenThrowException:
                     NotifyWhenConnectOrListenThrowException = (bool)optionValue;
                     break;
@@ -559,8 +552,6 @@ namespace NetMQ.Core
 
                 case ZmqSocketOption.NotifyWhenConnectedFail:
                     return NotifyWhenConnectedFail;
-                case ZmqSocketOption.MaxConnectedFailCount:
-                    return MaxConnectedFailCount;
                 case ZmqSocketOption.NotifyWhenConnectOrListenThrowException:
                     return NotifyWhenConnectOrListenThrowException;
 

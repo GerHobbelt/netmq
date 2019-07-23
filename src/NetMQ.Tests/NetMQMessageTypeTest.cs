@@ -95,7 +95,6 @@ namespace NetMQ.Tests
             {
                 client.Connect("tcp://127.0.0.1:" + 12345);
                 client.Options.NotifyWhenConnectedFail = true;
-                client.Options.MaxConnectedFailCount = 1;
                 NetMQMessage reqMessage =  client.ReceiveMultipartMessage();
                 Assert.AreEqual(2, reqMessage.FrameCount);
                 Assert.AreEqual(NetMQMessageType.SocketError, reqMessage.MessageType);
@@ -111,7 +110,6 @@ namespace NetMQ.Tests
             {
                 client.Connect("tcp://127.0.0.1:" + 12345);
                 client.Options.NotifyWhenConnectedFail = true;
-                client.Options.MaxConnectedFailCount = 1;
 
                 NetMQMessage reqMessage = null;
                 if (client.TryReceiveMultipartMessage(TimeSpan.FromSeconds(3), ref reqMessage))

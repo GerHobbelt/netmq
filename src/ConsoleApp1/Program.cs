@@ -89,7 +89,7 @@ namespace ConsoleApp1
         {
             using (var client = new StreamSocket())
             {
-                client.Connect("tcp://127.0.0.1:" + 12345);
+                client.Bind("tcp://127.0.0.1:" + 12345);
                 client.Options.NotifyWhenConnectedFail = true;
                 client.Options.ReconnectIntervalMax = TimeSpan.FromSeconds(1);
                 NetMQMessage reqMessage =  client.ReceiveMultipartMessage();

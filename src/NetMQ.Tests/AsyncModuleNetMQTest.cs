@@ -49,7 +49,6 @@ namespace NetMQ.Tests
             using (var server = new StreamSocket())
             {
                 //响应客户端完成时主动关闭连接
-                server.Options.ProactiveCloseConnect = true;
                 var port = 10010;
                 server.Bind("tcp://*:" + port);
                 using (var client = new StreamSocket())
@@ -73,7 +72,7 @@ namespace NetMQ.Tests
                     Assert.AreEqual(request, reqMessage.Last.ConvertToString());
 
                     server.SendMoreFrame(reqMessage.First.Buffer).SendFrame(response);
-
+                    server.SendFrameEmpty(false);
                     var respMessage =  client.ReceiveMultipartMessage();
                     Assert.AreEqual(respMessage.MessageType, NetMQMessageType.Data);
                 }

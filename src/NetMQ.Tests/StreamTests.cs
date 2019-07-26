@@ -2,6 +2,7 @@
 
 using NetMQ.Sockets;
 using System.Threading;
+using System;
 
 namespace NetMQ.Tests
 {
@@ -15,19 +16,27 @@ namespace NetMQ.Tests
             using (var server = new StreamSocket())
             {
                 server.Options.ThrowDelimiter = true;
-                int port = server.BindRandomPort("tcp://*");
+                server.Bind("tcp://127.0.0.1:22111");
                 using (var client = new StreamSocket())
                 {
-                    client.Connect("tcp://127.0.0.1:" + port);
+                    //不自动重连
+                    client.Options.ReconnectInterval = TimeSpan.FromMilliseconds(-1);
+                    //短链接不自动重连，连接断开立即释放
+                    client.Options.DelayOnDisconnect = false;
+                    client.Connect("tcp://127.0.0.1:22111");
                     client.SendMoreFrame(client.Options.Identity);
                     client.SendFrame("test");
                     NetMQMessage reqMessage = server.ReceiveMultipartMessage();
                     reqMessage.RemoveFrame(reqMessage.Last);
-                    reqMessage.Append(new byte[] { });
+                    reqMessage.Append(EmptyArray<byte>.Instance);
                     server.SendMultipartMessage(reqMessage);
-                    client.SendMoreFrame(client.Options.Identity);
-                    client.SendFrame("test");
-                    reqMessage = server.ReceiveMultipartMessage();
+                    bool r = server.TryReceiveMultipartMessage(TimeSpan.FromSeconds(1),ref reqMessage);
+                    Assert.IsFalse(r);
+                    r = client.TryReceiveMultipartMessage(TimeSpan.FromSeconds(1), ref reqMessage);
+                    Assert.IsFalse(r);
+                    Assert.Throws<HostUnreachableException>(() => client.SendMoreFrame(client.Options.Identity));
+                    r = server.TryReceiveMultipartMessage(TimeSpan.FromSeconds(1), ref reqMessage);
+                    Assert.IsFalse(r);
                 }
             }
         }

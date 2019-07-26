@@ -239,6 +239,9 @@ namespace NetMQ.Core.Transports.Tcp
                 {
                     m_socket.EventAcceptFailed(m_endpoint, socketError.ToErrorCode());
 
+                    //当链接直接出现异常时，释放原来的socket,否则可能出现内存泄漏
+                    var acceptedSocket = m_handle.GetAcceptedSocket();
+                    acceptedSocket.Dispose();
                     Accept();
                     break;
                 }

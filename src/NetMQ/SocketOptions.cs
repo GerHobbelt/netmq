@@ -383,6 +383,9 @@ namespace NetMQ
             set => m_socket.SetSocketOption(ZmqSocketOption.XPublisherManual, value);
         }
 
+        /// <summary>
+        /// 是否禁用timewait状态，若监听时禁用则客户端关闭连接后，服务端直接回返回RST包重置连接.
+        /// </summary>
         public bool DisableTimeWait
         {
             get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.DisableTimeWait);
@@ -401,6 +404,7 @@ namespace NetMQ
         /// <summary>
         /// 服务端响应完是否主动关闭连接,默认为false。不主动关闭。
         /// </summary>
+        [Obsolete("发一个空的字节来中断连接。更容易的进行控制")]
         public bool ProactiveCloseConnect
         {
             get => m_socket.GetSocketOptionX<bool>(ZmqSocketOption.ProactiveCloseConnect);

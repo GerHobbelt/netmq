@@ -549,7 +549,7 @@ namespace NetMQ.Core
         private void Detached()
         {
             // Transient session self-destructs after peer disconnects.
-            if (!m_connect)
+            if (m_options.ReconnectIvl == -1/*设置不自动重连时当接收到断开连接通知，则通知对端管道中断。*/ || !m_connect)
             {
                 Terminate();
                 return;

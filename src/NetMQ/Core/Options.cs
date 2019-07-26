@@ -280,6 +280,7 @@ namespace NetMQ.Core
         /// <summary>
         /// 服务端响应完是否主动关闭连接,默认为false。不主动关闭。
         /// </summary>
+        [Obsolete("发一个空的字节来中断连接。更容易的进行控制")]
         public bool ProactiveCloseConnect { get; set; }
 
 

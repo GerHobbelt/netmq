@@ -23,11 +23,11 @@
 	  <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyVersion>4.0.3.2</AssemblyVersion>
-    <FileVersion>4.0.3.2</FileVersion>
-    <Version>4.0.3.2</Version>
+    <AssemblyVersion>4.0.3.3</AssemblyVersion>
+    <FileVersion>4.0.3.3</FileVersion>
+    <Version>4.0.3.3</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>更新AsyncIO版本到0.1.29.1,修复建立连接时，接收或发送数据时连接重置释放资源时，重叠资源未释放导致存在内存泄漏的问题。
+    <PackageReleaseNotes>更新AsyncIO版本到0.1.29.2,修复建立连接时，接收或发送数据时连接重置释放资源时，重叠资源未释放导致存在内存泄漏的问题。
 去重客户端连接连不上重试，tcp协议本身就会自动重连。
 支持上层主动关闭连接。后续不再使用配置。
 服务端主动断开连接时，若客户端配置不自动重连，则主动释放内存。</PackageReleaseNotes>
@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AsyncIO" Version="0.1.29.1" />
+    <PackageReference Include="AsyncIO" Version="0.1.29.2" />
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>

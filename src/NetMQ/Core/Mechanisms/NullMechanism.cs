@@ -6,7 +6,6 @@ namespace NetMQ.Core.Mechanisms
 {
     internal class NullMechanism : Mechanism
     {
-        const string ReadyCommandName = "READY";
         private const string ErrorCommandName = "ERROR";
         private const int ErrorReasonLengthSize = 1;
 
@@ -75,6 +74,7 @@ namespace NetMQ.Core.Mechanisms
 
         public override PushMsgResult ProcessHandshakeCommand(ref Msg msg)
         {
+            Console.WriteLine("Null Mechanism Process Handshake command");
             if (m_readyCommandReceived || m_errorCommandReceived)
                 return PushMsgResult.Error;
 

@@ -58,6 +58,8 @@ namespace NetMQ.Core
             PgmMaxTransportServiceDataUnitLength = Config.PgmMaxTPDU;
             Mechanism = MechanismType.Null;
             AsServer = false;
+            PlainUsername = String.Empty;
+            PlainPassword = String.Empty;
             CurvePublicKey = new byte[32];
             CurveSecretKey = new byte[32];
             CurveServerKey = new byte[32];
@@ -284,17 +286,26 @@ namespace NetMQ.Core
         /// If peer is acting as server for PLAIN or CURVE mechanisms
         /// </summary>
         public bool AsServer { get; set; }
-        
+
+        /// <summary>
+        /// Security credentials for PLAIN mechanism
+        /// </summary>
+        public string PlainUsername { get; set; }
+
+        /// <summary>
+        /// Security credentials for PLAIN mechanism
+        /// </summary>
+        public string PlainPassword { get; set; }
         /// <summary>
         /// Security credentials for CURVE mechanism
         /// </summary>
         public byte[] CurvePublicKey { get; set; }
-        
+
         /// <summary>
         /// Security credentials for CURVE mechanism
         /// </summary>
         public byte[] CurveSecretKey { get; set; }
-        
+
         /// <summary>
         /// Security credentials for CURVE mechanism
         /// </summary>
@@ -477,6 +488,20 @@ namespace NetMQ.Core
                     HeartbeatTimeout = Get<int>();
                     break;
 
+                case ZmqSocketOption.PlainUsername:
+                    Console.WriteLine("Setting Username");
+                    PlainUsername = Get<string>();
+                    Console.WriteLine("Setting Mechanism");
+                    Mechanism = MechanismType.Plain;
+                    break;
+
+                case ZmqSocketOption.PlainPassword:
+                    Console.WriteLine("Setting Password");
+                    PlainPassword = Get<string>();
+                    Console.WriteLine("Setting Mechanism");
+                    Mechanism = MechanismType.Plain;
+                    break;
+
                 case ZmqSocketOption.CurveServer:
                     AsServer = Get<bool>();
                     Mechanism = AsServer ? MechanismType.Curve : MechanismType.Null;
@@ -646,7 +671,13 @@ namespace NetMQ.Core
                     if (HeartbeatTimeout == -1)
                         return HeartbeatInterval;
                     return HeartbeatTimeout;
-                
+
+                case ZmqSocketOption.PlainUsername:
+                    return PlainUsername;
+
+                case ZmqSocketOption.PlainPassword:
+                    return PlainPassword;
+
                 case ZmqSocketOption.CurveServer:
                     return Mechanism == MechanismType.Curve && AsServer;
                 

@@ -319,6 +319,7 @@ namespace NetMQ.Core.Transports
 
         private void Error()
         {
+            Console.WriteLine("Stream Engine Error");
             Debug.Assert(m_session != null);
             m_state = State.Error;
             m_socket.EventDisconnected(m_endpoint, m_handle);
@@ -380,6 +381,7 @@ namespace NetMQ.Core.Transports
                     switch (action)
                     {
                         case Action.InCompleted:
+                            Console.WriteLine("Reading in active state");
                             m_insize = EndRead(socketError, bytesTransferred);
 
                             ProcessInput();
@@ -442,6 +444,7 @@ namespace NetMQ.Core.Transports
                 while (m_outsize < Config.OutBatchSize)
                 {
                     Msg msg = new Msg();
+                    Console.WriteLine("Beginning Sending");
                     if (m_nextMsg(ref msg) != PullMsgResult.Ok)
                         break;
                     m_encoder.LoadMsg(ref msg);
@@ -507,6 +510,7 @@ namespace NetMQ.Core.Transports
 
                             if (bytesSent == -1)
                             {
+                                Console.WriteLine("SteamEngine Error 1 ");
                                 Error();
                             }
                             else
@@ -547,6 +551,7 @@ namespace NetMQ.Core.Transports
 
                             if (bytesReceived == -1)
                             {
+                                Console.WriteLine("SteamEngine Error 2 ");
                                 Error();
                             }
                             else
@@ -619,6 +624,7 @@ namespace NetMQ.Core.Transports
 
                             if (bytesSent == -1)
                             {
+                                Console.WriteLine("SteamEngine Error 3 ");
                                 Error();
                             }
                             else
@@ -656,6 +662,7 @@ namespace NetMQ.Core.Transports
 
                             if (bytesReceived == -1)
                             {
+                                Console.WriteLine("SteamEngine Error 4 ");
                                 Error();
                             }
                             else
@@ -721,6 +728,7 @@ namespace NetMQ.Core.Transports
 
                             if (bytesSent == -1)
                             {
+                                Console.WriteLine("SteamEngine Error 5 ");
                                 Error();
                             }
                             else
@@ -782,6 +790,7 @@ namespace NetMQ.Core.Transports
 
                             if (bytesReceived == -1)
                             {
+                                Console.WriteLine("SteamEngine Error 6 ");
                                 Error();
                             }
                             else
@@ -834,6 +843,7 @@ namespace NetMQ.Core.Transports
 
                             if (bytesSent == -1)
                             {
+                                Console.WriteLine("SteamEngine Error 7 ");
                                 Error();
                             }
                             else
@@ -870,6 +880,7 @@ namespace NetMQ.Core.Transports
 
                             if (bytesReceived == -1)
                             {
+                                Console.WriteLine("SteamEngine Error 8 ");
                                 Error();
                             }
                             else
@@ -892,8 +903,16 @@ namespace NetMQ.Core.Transports
                                     else if (m_options.Mechanism == MechanismType.Plain
                                              && ByteArrayUtility.AreEqual(m_greeting, 12, PlainMechanismBytes, 0, 20))
                                     {
-                                        Error(); // Not yet supported
-                                        return;
+                                        Console.WriteLine("MECHANISM is PLAIN");
+
+                                        if (m_options.AsServer)
+                                        {
+                                            Console.WriteLine("SteamEngine Error 9 ");
+                                            Error(); // Not yet supported
+                                            return;
+                                        }
+                                        else
+                                            m_mechanism = new PlainClientMechanism(m_session, m_options);
                                     }
                                     else if (m_options.Mechanism == MechanismType.Curve
                                              && ByteArrayUtility.AreEqual(m_greeting, 12, CurveMechanismBytes, 0, 20))
@@ -905,6 +924,7 @@ namespace NetMQ.Core.Transports
                                     }
                                     else {
                                         // Unsupported mechanism
+                                        Console.WriteLine("SteamEngine Error 10 ");
                                         Error();
                                         return;
                                     }
@@ -935,6 +955,8 @@ namespace NetMQ.Core.Transports
         {
             // Handshaking was successful.
             // Switch into the normal message flow.
+            Console.WriteLine("Handshake was successful!\n");
+
             m_state = State.Active;
 
             m_outsize = 0;
@@ -957,9 +979,11 @@ namespace NetMQ.Core.Transports
 
         private void ProcessInput()
         {
+            Console.WriteLine("Processing Input");
             if (m_insize == -1)
             {
                 m_insize = 0;
+                Console.WriteLine("SteamEngine Error 11 ");
                 Error();
                 return; 
             }
@@ -972,6 +996,7 @@ namespace NetMQ.Core.Transports
 
                 if (result == DecodeResult.Error)
                 {
+                    Console.WriteLine("SteamEngine Error 12 ");
                     Error();
                     return;
                 }
@@ -988,6 +1013,7 @@ namespace NetMQ.Core.Transports
                 }
                 else if (pushResult == PushMsgResult.Error)
                 {
+                    Console.WriteLine("SteamEngine Error 13 ");
                     Error();
                     return;
                 }
@@ -1150,6 +1176,7 @@ namespace NetMQ.Core.Transports
 
         PullMsgResult NextHandshakeCommand (ref Msg msg)
         {
+            // Console.WriteLine("Creating next Handshake command with status: " + m_mechanism.Status);
             if (m_mechanism.Status == MechanismStatus.Ready) 
             {
                 MechanismReady();
@@ -1157,6 +1184,7 @@ namespace NetMQ.Core.Transports
             }
             else if (m_mechanism.Status == MechanismStatus.Error) 
             {
+                Console.WriteLine("---- Result was ERROR ---- 1");
                 return PullMsgResult.Error;
             } 
             else 
@@ -1165,13 +1193,13 @@ namespace NetMQ.Core.Transports
 
                 if (result == PullMsgResult.Ok)
                     msg.SetFlags(MsgFlags.Command);
-
                 return result;
             }
         }
 
         PushMsgResult ProcessHandshakeCommand (ref Msg msg)
         {
+            // Console.WriteLine("Processing Handshake command with status: " + m_mechanism.Status);
             var result = m_mechanism.ProcessHandshakeCommand(ref msg);
             if (result == PushMsgResult.Ok) 
             {
@@ -1186,7 +1214,6 @@ namespace NetMQ.Core.Transports
                     BeginSending();
                 }
             }
-
             return result;
         }
         
@@ -1370,11 +1397,13 @@ namespace NetMQ.Core.Transports
             else if (id == HeartbeatTtlTimerId) 
             {
                 m_hasTtlTimer = false;
+                Console.WriteLine("SteamEngine Error 14 ");
                 Error();
             } 
             else if (id == HeartbeatTimeoutTimerId) 
             {
                 m_hasTimeoutTimer = false;
+                Console.WriteLine("SteamEngine Error 15 ");
                 Error();
             }
             else

@@ -488,17 +488,22 @@ namespace NetMQ.Core
                     HeartbeatTimeout = Get<int>();
                     break;
 
+                case ZmqSocketOption.PlainServer:
+                    Console.WriteLine("Setting Plain Server");
+                    AsServer = Get<bool>();
+                    Mechanism = AsServer? MechanismType.Plain: MechanismType.Null;
+                    break;
+
+
                 case ZmqSocketOption.PlainUsername:
                     Console.WriteLine("Setting Username");
                     PlainUsername = Get<string>();
-                    Console.WriteLine("Setting Mechanism");
                     Mechanism = MechanismType.Plain;
                     break;
 
                 case ZmqSocketOption.PlainPassword:
                     Console.WriteLine("Setting Password");
                     PlainPassword = Get<string>();
-                    Console.WriteLine("Setting Mechanism");
                     Mechanism = MechanismType.Plain;
                     break;
 

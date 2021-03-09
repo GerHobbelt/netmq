@@ -354,6 +354,13 @@ namespace NetMQ.Core
         /// </summary>
         PlainPassword = 61,
 
+
+
+        /// <summary>
+        /// Act as plain authentication server
+        /// </summary>
+        PlainServer = 62,
+
         /// <summary>
         /// Specifies the byte-order: big-endian, vs little-endian.
         /// </summary>

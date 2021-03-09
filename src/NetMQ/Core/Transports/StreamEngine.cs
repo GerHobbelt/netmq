@@ -319,7 +319,6 @@ namespace NetMQ.Core.Transports
 
         private void Error()
         {
-            Console.WriteLine("Stream Engine Error");
             Debug.Assert(m_session != null);
             m_state = State.Error;
             m_socket.EventDisconnected(m_endpoint, m_handle);
@@ -381,7 +380,6 @@ namespace NetMQ.Core.Transports
                     switch (action)
                     {
                         case Action.InCompleted:
-                            Console.WriteLine("Reading in active state");
                             m_insize = EndRead(socketError, bytesTransferred);
 
                             ProcessInput();
@@ -444,7 +442,6 @@ namespace NetMQ.Core.Transports
                 while (m_outsize < Config.OutBatchSize)
                 {
                     Msg msg = new Msg();
-                    Console.WriteLine("Beginning Sending");
                     if (m_nextMsg(ref msg) != PullMsgResult.Ok)
                         break;
                     m_encoder.LoadMsg(ref msg);
@@ -510,7 +507,6 @@ namespace NetMQ.Core.Transports
 
                             if (bytesSent == -1)
                             {
-                                Console.WriteLine("SteamEngine Error 1 ");
                                 Error();
                             }
                             else
@@ -551,7 +547,6 @@ namespace NetMQ.Core.Transports
 
                             if (bytesReceived == -1)
                             {
-                                Console.WriteLine("SteamEngine Error 2 ");
                                 Error();
                             }
                             else
@@ -624,7 +619,6 @@ namespace NetMQ.Core.Transports
 
                             if (bytesSent == -1)
                             {
-                                Console.WriteLine("SteamEngine Error 3 ");
                                 Error();
                             }
                             else
@@ -662,7 +656,6 @@ namespace NetMQ.Core.Transports
 
                             if (bytesReceived == -1)
                             {
-                                Console.WriteLine("SteamEngine Error 4 ");
                                 Error();
                             }
                             else
@@ -728,7 +721,6 @@ namespace NetMQ.Core.Transports
 
                             if (bytesSent == -1)
                             {
-                                Console.WriteLine("SteamEngine Error 5 ");
                                 Error();
                             }
                             else
@@ -790,7 +782,6 @@ namespace NetMQ.Core.Transports
 
                             if (bytesReceived == -1)
                             {
-                                Console.WriteLine("SteamEngine Error 6 ");
                                 Error();
                             }
                             else
@@ -843,7 +834,6 @@ namespace NetMQ.Core.Transports
 
                             if (bytesSent == -1)
                             {
-                                Console.WriteLine("SteamEngine Error 7 ");
                                 Error();
                             }
                             else
@@ -880,7 +870,6 @@ namespace NetMQ.Core.Transports
 
                             if (bytesReceived == -1)
                             {
-                                Console.WriteLine("SteamEngine Error 8 ");
                                 Error();
                             }
                             else
@@ -896,20 +885,21 @@ namespace NetMQ.Core.Transports
                                 {
                                     m_encoder = new V2Encoder(Config.OutBatchSize, m_options.Endian);
                                     m_decoder = new V2Decoder(Config.InBatchSize, m_options.MaxMessageSize, m_options.Endian);
-                                    
+
                                     if (m_options.Mechanism == MechanismType.Null
                                         && ByteArrayUtility.AreEqual(m_greeting, 12, NullMechanismBytes, 0, 20))
+                                    {
+                                        Console.WriteLine("MECHANISM is Null");
                                         m_mechanism = new NullMechanism(m_session, m_options);
-                                    else if (m_options.Mechanism == MechanismType.Plain
-                                             && ByteArrayUtility.AreEqual(m_greeting, 12, PlainMechanismBytes, 0, 20))
+                                    } else if (m_options.Mechanism == MechanismType.Plain
+                                            && ByteArrayUtility.AreEqual(m_greeting, 12, PlainMechanismBytes, 0, 20))
                                     {
                                         Console.WriteLine("MECHANISM is PLAIN");
 
                                         if (m_options.AsServer)
                                         {
-                                            Console.WriteLine("SteamEngine Error 9 ");
-                                            Error(); // Not yet supported
-                                            return;
+
+                                            m_mechanism = new PlainServerMechanism(m_session, m_options);
                                         }
                                         else
                                             m_mechanism = new PlainClientMechanism(m_session, m_options);
@@ -917,14 +907,16 @@ namespace NetMQ.Core.Transports
                                     else if (m_options.Mechanism == MechanismType.Curve
                                              && ByteArrayUtility.AreEqual(m_greeting, 12, CurveMechanismBytes, 0, 20))
                                     {
+                                        Console.WriteLine("MECHANISM is Curve");
                                         if (m_options.AsServer)
                                             m_mechanism = new CurveServerMechanism(m_session, m_options);
                                         else
                                             m_mechanism = new CurveClientMechanism(m_session, m_options);
                                     }
-                                    else {
+                                    else
+                                    {
                                         // Unsupported mechanism
-                                        Console.WriteLine("SteamEngine Error 10 ");
+                                        Console.WriteLine("MECHANISM is not supported");
                                         Error();
                                         return;
                                     }
@@ -983,7 +975,6 @@ namespace NetMQ.Core.Transports
             if (m_insize == -1)
             {
                 m_insize = 0;
-                Console.WriteLine("SteamEngine Error 11 ");
                 Error();
                 return; 
             }
@@ -996,7 +987,6 @@ namespace NetMQ.Core.Transports
 
                 if (result == DecodeResult.Error)
                 {
-                    Console.WriteLine("SteamEngine Error 12 ");
                     Error();
                     return;
                 }
@@ -1013,7 +1003,6 @@ namespace NetMQ.Core.Transports
                 }
                 else if (pushResult == PushMsgResult.Error)
                 {
-                    Console.WriteLine("SteamEngine Error 13 ");
                     Error();
                     return;
                 }
@@ -1397,13 +1386,11 @@ namespace NetMQ.Core.Transports
             else if (id == HeartbeatTtlTimerId) 
             {
                 m_hasTtlTimer = false;
-                Console.WriteLine("SteamEngine Error 14 ");
                 Error();
             } 
             else if (id == HeartbeatTimeoutTimerId) 
             {
                 m_hasTimeoutTimer = false;
-                Console.WriteLine("SteamEngine Error 15 ");
                 Error();
             }
             else

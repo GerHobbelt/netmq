@@ -63,6 +63,8 @@ namespace NetMQ.Core.Mechanisms
 
         public override PullMsgResult NextHandshakeCommand(ref Msg msg)
         {
+            Console.Write("Creating Message: ");
+            PrintMessage(msg);
             if (m_readyCommandSent)
                 return PullMsgResult.Empty;
 
@@ -74,7 +76,8 @@ namespace NetMQ.Core.Mechanisms
 
         public override PushMsgResult ProcessHandshakeCommand(ref Msg msg)
         {
-            Console.WriteLine("Null Mechanism Process Handshake command");
+            Console.Write("Processing Message: ");
+            PrintMessage(msg);
             if (m_readyCommandReceived || m_errorCommandReceived)
                 return PushMsgResult.Error;
 

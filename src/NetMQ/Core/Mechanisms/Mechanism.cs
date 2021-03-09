@@ -228,13 +228,14 @@ namespace NetMQ.Core.Mechanisms
 
         
 
-    /// <summary>
-    /// Parses a metadata.
-    /// Metadata consists of a list of properties consisting of
-    /// name and value as size-specified strings.
-    /// </summary>
-    /// <returns>Returns true on success and false on error.</returns>
-    protected bool ParseMetadata(Span<byte> source)
+        /// <summary>
+        /// Parses a metadata.
+        /// Metadata consists of a list of properties consisting of
+        /// name and value as size-specified strings.
+        /// </summary>
+        /// <returns>Returns true on success and false on error.</returns>
+    
+        protected bool ParseMetadata(Span<byte> source)
         {
             while (source.Length > 1)
             {
@@ -420,6 +421,22 @@ namespace NetMQ.Core.Mechanisms
             }
 
             return false;
+        }
+
+        public static void PrintMessage(Msg msg)
+        {
+            for (int i = 0; i < msg.Size; i++)
+            {
+                if (msg[i] < 32 || (msg[i] > 47 && msg[i] < 58))
+                {
+                    Console.Write(" " + msg[i] + " ");
+                }
+                else
+                {
+                    Console.Write(((char)msg[i]));
+                }
+            }
+            Console.Write("\n");
         }
     }
 }

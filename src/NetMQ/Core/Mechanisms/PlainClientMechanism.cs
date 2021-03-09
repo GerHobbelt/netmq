@@ -23,6 +23,7 @@ namespace NetMQ.Core.Mechanisms
         public PlainClientMechanism(SessionBase session, Options options) : base(session, options)
         {
             Console.WriteLine("Creating Plain Client Mechanism");
+            state = State.SENDING_HELLO;
         }
 
         public override MechanismStatus Status
@@ -44,45 +45,6 @@ namespace NetMQ.Core.Mechanisms
             }
         }
 
-
-
-        public override void Dispose()
-        {
-
-            Console.WriteLine("DISPOSING Plain Client Mechanism.\n");
-        }
-
-        public override PullMsgResult NextHandshakeCommand(ref Msg msg)
-        {
-            Console.WriteLine("Producing next Handshake Command with internal state: " + state);
-            PullMsgResult rc;
-            switch (state)
-            {
-                case State.SENDING_HELLO:
-                    rc = ProduceHello(ref msg);
-                    if (rc == PullMsgResult.Ok)
-                    {
-                        state = State.WAITING_FOR_WELCOME;
-                    }
-                    break;
-                case State.SENDING_INITIATE:
-                    rc = ProduceInitiate(ref msg);
-                    if (rc == PullMsgResult.Ok)
-                    {
-                        state = State.WAITING_FOR_READY;
-                    }
-                    break;
-                default:
-                    rc = PullMsgResult.Empty;
-                    break;
-
-            }
-            Console.Write("Sending Message: ");
-            PrintMessage(msg);
-            Console.WriteLine("Internal state after generating next command: " + state);
-            return rc;
-        }
-
         public override PushMsgResult ProcessHandshakeCommand(ref Msg msg)
         {
             Console.WriteLine("Processing Handshake Command with internal state: " + state);
@@ -90,7 +52,7 @@ namespace NetMQ.Core.Mechanisms
             PrintMessage(msg);
             int dataSize = msg.Size;
             PushMsgResult result;
-            if (IsCommand("WELCOME", ref msg))
+            if (state == State.WAITING_FOR_WELCOME)
             {
                 result = ProcessWelcome(msg);
             }
@@ -108,7 +70,40 @@ namespace NetMQ.Core.Mechanisms
                 Console.WriteLine("PLAIN Client I: invalid handshake command");
                 result = PushMsgResult.Error;
             }
-            Console.WriteLine("Internal state after processing next command: " + state);
+            Console.Write("Processed command: ");
+            PrintMessage(msg);
+            Console.WriteLine("Internal state after generating next command: " + state);
+            return result;
+        }
+
+        public override PullMsgResult NextHandshakeCommand(ref Msg msg)
+        {
+            Console.WriteLine("Creating next Handshake Command with internal state: " + state);
+            PullMsgResult result;
+            switch (state)
+            {
+                case State.SENDING_HELLO:
+                    result = ProduceHello(ref msg);
+                    if (result == PullMsgResult.Ok)
+                    {
+                        state = State.WAITING_FOR_WELCOME;
+                    }
+                    break;
+                case State.SENDING_INITIATE:
+                    result = ProduceInitiate(ref msg);
+                    if (result == PullMsgResult.Ok)
+                    {
+                        state = State.WAITING_FOR_READY;
+                    }
+                    break;
+                default:
+                    result = PullMsgResult.Empty;
+                    break;
+
+            }
+            Console.Write("Sending command: ");
+            PrintMessage(msg);
+            Console.WriteLine("Internal state after creating next command: " + state);
             return result;
         }
 
@@ -122,7 +117,11 @@ namespace NetMQ.Core.Mechanisms
             // Console.WriteLine("Putting Hello");
             int commandSize = 1 + command.Length + 1 + plainUsername.Length + 1 + plainPassword.Length;
             msg.InitPool(commandSize);
-            msg.Put((byte)command.Length, 0);
+
+
+            // msg.Put((byte)command.Length, 0);
+            msg.Put((byte) 5, 0);
+
             msg.Put(Encoding.ASCII, command, 1);
             // Console.WriteLine("Putting Username");
             msg.Put((byte)plainUsername.Length, 1 + command.Length);
@@ -134,21 +133,6 @@ namespace NetMQ.Core.Mechanisms
             // Console.WriteLine("Initialized: " + msg.IsInitialised);
 
             return PullMsgResult.Ok;
-        }
-
-        private void PrintMessage(Msg msg)
-        {
-            for (int i = 0; i < msg.Size; i++)
-            {
-                if(msg[i] < 32 || (msg[i] > 47 && msg[i] < 58))
-                {
-                    Console.Write(" " + msg[i] + " ");
-                } else
-                {
-                    Console.Write(((char) msg[i]));
-                }
-            }
-            Console.Write("\n");
         }
 
         private PullMsgResult ProduceInitiate(ref Msg msg)
@@ -235,6 +219,12 @@ namespace NetMQ.Core.Mechanisms
             }
             state = State.ERROR_COMMAND_RECEIVED;
             return PushMsgResult.Error;
+        }
+
+        public override void Dispose()
+        {
+
+            Console.WriteLine("DISPOSING Plain Client Mechanism.\n");
         }
     }
 }

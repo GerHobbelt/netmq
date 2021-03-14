@@ -112,7 +112,7 @@ namespace NetMQ.Core.Mechanisms
             Console.WriteLine("Producing Hello");
             String plainUsername = Options.PlainUsername;
             String plainPassword = Options.PlainPassword;
-            string command = "WELCOME";
+            string command = "HELLO";
 
             // Console.WriteLine("Putting Hello");
             int commandSize = 1 + command.Length + 1 + plainUsername.Length + 1 + plainPassword.Length;

@@ -971,7 +971,6 @@ namespace NetMQ.Core.Transports
 
         private void ProcessInput()
         {
-            Console.WriteLine("Processing Input");
             if (m_insize == -1)
             {
                 m_insize = 0;

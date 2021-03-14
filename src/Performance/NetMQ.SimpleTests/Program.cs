@@ -13,7 +13,28 @@ namespace NetMQ.SimpleTests
         {
             Console.Title = "NetMQ HelloWorld";
 
-            /*using (var pub = new PublisherSocket())
+            using (var sub = new SubscriberSocket())
+            {
+
+                sub.Options.PlainUsername = "operator";
+                sub.Options.PlainPassword = "psiori";
+
+                sub.Connect("tcp://192.168.0.52:6021");
+                sub.Subscribe("CraneMetrics:");
+                while (true)
+                {
+                    List<string> messageList = sub.ReceiveMultipartStrings();
+                    Console.WriteLine("Topic: {0} Message: {1}", messageList[0], messageList[1]);
+                }
+            }
+        }
+
+
+
+
+        public static void Publish()
+        {
+            using (var pub = new PublisherSocket())
             {
 
                 bool usePlain = true;
@@ -35,57 +56,7 @@ namespace NetMQ.SimpleTests
                 Console.WriteLine();
                 Console.Write("Press any key to exit...");
                 Console.ReadKey();
-            }*/
-
-
-
-
-
-            using (var sub = new SubscriberSocket())
-            {
-                bool usePlain = true;
-
-
-                if (usePlain)
-                {
-                    sub.Options.PlainUsername = "operator";
-                    sub.Options.PlainPassword = "psiori";
-                }
-
-                sub.Connect("tcp://192.168.0.52:6021");
-                sub.SubscribeToAnyTopic();
-                while (true)
-                {
-                    Msg msg = new Msg();
-                    msg.InitEmpty();
-                    sub.Receive(ref msg);
-                    Console.WriteLine("RECEIVED MESSAGE: " + msg.Size);
-                    PrintMessage(msg);
-                    // List<string> messageList = sub.ReceiveMultipartStrings();
-                    // Console.WriteLine("Topic: {0} Message: {1}", messageList[0], messageList[1]);
-                }
-                Console.WriteLine();
-                Console.Write("Press any key to exit...");
-                Console.ReadKey();
             }
-
-
-
-            /*using (var server = new ResponseSocket("@tcp://localhost:5556"))
-            using (var client = new RequestSocket("tcp://localhost:5556"))
-            {
-                client.SendFrame("Hello");
-
-                Console.WriteLine("From Client: {0}", server.ReceiveFrameString());
-
-                server.SendFrame("Hi Back");
-
-                Console.WriteLine("From Server: {0}", client.ReceiveFrameString());
-
-                Console.WriteLine();
-                Console.Write("Press any key to exit...");
-                Console.ReadKey();
-            }*/
         }
 
         public static void PrintMessage(Msg msg)

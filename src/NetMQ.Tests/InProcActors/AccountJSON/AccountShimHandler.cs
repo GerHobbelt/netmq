@@ -53,8 +53,15 @@ namespace NetMQ.Tests.InProcActors.AccountJSON
 
                         string accountJson = msg[2].ConvertToString();
                         var account = JsonConvert.DeserializeObject<Account>(accountJson);
-                        AmendAccount(accountAction, account);
-                        shim.SendFrame(JsonConvert.SerializeObject(account));
+                        if (account != null && accountAction != null)
+                        {
+                            AmendAccount(accountAction, account);
+                            shim.SendFrame(JsonConvert.SerializeObject(account));
+                        }
+                        else
+                        {
+                            shim.SendFrame("Error: incorrectly formatted message to actor");
+                        }
                     }
                     else
                     {

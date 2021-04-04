@@ -138,10 +138,10 @@ namespace NetMQ.Core.Mechanisms
         private PullMsgResult ProduceInitiate(ref Msg msg)
         {
             Console.WriteLine("Producing Initiate");
-            string initiativeString = "INITIATE";
+            // string initiativeString = "INITIATE";
             //  Add mechanism string
             // int commandSize = 1 + initiativeString.Length + GetPropertyLength(ZmtpPropertySocketType, socketType.Length);
-            string socketTypeName = "Socket-Type";
+            // string socketTypeName = "Socket-Type";
             string socketTypeValueName = GetSocketName(Options.SocketType);
 
             MakeCommandWithBasicProperties(ref msg, "INITIATE");

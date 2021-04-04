@@ -4,7 +4,7 @@
     <Description>A 100% native C# port of the lightweight high performance messaging library ZeroMQ</Description>
     <AssemblyVersion>$(PackageVersion)</AssemblyVersion>
     <Version>$(PackageVersion)</Version>
-    <TargetFrameworks>net45;net47;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFramework>net48</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyOriginatorKeyFile>./NetMQ.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>

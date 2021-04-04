@@ -14,7 +14,7 @@ build_script:
 
 test_script:
   - dotnet test -v n -p:ParallelizeTestCollections=false --configuration Release --no-build -f netcoreapp2.1 src\NetMQ.Tests\NetMQ.Tests.csproj
-  - dotnet test -v n -p:ParallelizeTestCollections=false --configuration Release --no-build -f net47 src\NetMQ.Tests\NetMQ.Tests.csproj
+  - dotnet test -v n -p:ParallelizeTestCollections=false --configuration Release --no-build -f net48 src\NetMQ.Tests\NetMQ.Tests.csproj
   - OpenCover.Console.exe -register:user -target:"C:\Program Files\dotnet\dotnet.exe" -targetargs:"test --no-build --configuration Release -f netcoreapp2.1 --logger:trx;LogFileName=results.trx /p:DebugType=full src\NetMQ.Tests\NetMQ.Tests.csproj" -filter:"+[NetMQ*]* -[NetMQ.Tests*]*" -output:".\NetMQ_coverage.xml" -oldStyle
   - codecov -f "NetMQ_coverage.xml"
 

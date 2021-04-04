@@ -13,6 +13,7 @@ namespace NetMQ.Tests
             for (int i = 0; i < 1000; i++)
             {
                 var key = new NetMQCertificate();
+                Assert.NotNull(key.SecretKeyZ85);
                 var copy  = new NetMQCertificate(key.SecretKeyZ85, key.PublicKeyZ85);
 
                 Assert.Equal(key.SecretKeyZ85, copy.SecretKeyZ85);
@@ -40,6 +41,7 @@ namespace NetMQ.Tests
         public void FromSecretKey()
         {
             var key = new NetMQCertificate();
+            Assert.NotNull(key.SecretKeyZ85);
             var copy = new NetMQCertificate().FromSecretKey(key.SecretKeyZ85);
 
             Assert.Equal(key.SecretKeyZ85, copy.SecretKeyZ85);

@@ -124,8 +124,8 @@ namespace NetMQ
 							// on linux to receive broadcast you must bind to the broadcast address specifically
 							//bindTo = @interface.Address;
 							sendTo = @interface.BroadcastAddress;
-#if NET45 || NET47
-							if (Environment.OSVersion.Platform==PlatformID.Unix)
+#if NET45 || NET47_OR_GREATER
+                            if (Environment.OSVersion.Platform==PlatformID.Unix)
 #else
 							if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 #endif
@@ -311,7 +311,7 @@ namespace NetMQ
         {
             m_actor = NetMQActor.Create(new Shim());
 
-            void OnReceive(object sender, NetMQActorEventArgs e) => m_receiveEvent.Fire(this, new NetMQBeaconEventArgs(this));
+            void OnReceive(object sender, NetMQActorEventArgs e) => m_receiveEvent?.Fire(this, new NetMQBeaconEventArgs(this));
 
             m_receiveEvent = new EventDelegator<NetMQBeaconEventArgs>(
                 () => m_actor.ReceiveReady += OnReceive,

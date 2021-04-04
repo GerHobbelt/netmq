@@ -400,14 +400,14 @@ namespace NetMQ
         /// </summary>
         public int PgmMaxTransportServiceDataUnitLength
         {
-            get => m_socket.GetSocketOptionX<int>(ZmqSocketOption.PgmMaxTransportServiceDataUnitLength);
-            set => m_socket.SetSocketOption(ZmqSocketOption.PgmMaxTransportServiceDataUnitLength, value);
+            get => m_socket?.GetSocketOptionX<int>(ZmqSocketOption.PgmMaxTransportServiceDataUnitLength) ?? 0;
+            set => m_socket?.SetSocketOption(ZmqSocketOption.PgmMaxTransportServiceDataUnitLength, value);
         }
 
         /// <summary>
         /// Sets the socket's Plain Username
         /// </summary>
-        public string PlainUsername
+        public string? PlainUsername
         {
             get => m_socket.GetSocketOptionX<string>(ZmqSocketOption.PlainUsername);
             set => m_socket.SetSocketOption(ZmqSocketOption.PlainUsername, value);
@@ -416,7 +416,7 @@ namespace NetMQ
         /// <summary>
         /// Sets the socket's Plain Password
         /// </summary>
-        public string PlainPassword
+        public string? PlainPassword
         {
             get => m_socket.GetSocketOptionX<string>(ZmqSocketOption.PlainPassword);
             set => m_socket.SetSocketOption(ZmqSocketOption.PlainPassword, value);

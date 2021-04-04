@@ -36,8 +36,8 @@ namespace NetMQ
         {
             byte byte_nbr = 0;
             UInt32 value = 0;
-            string dest = null;
-            while (byte_nbr<data.Length) 
+            string dest = "";
+            while (byte_nbr < data.Length) 
             {
                 //  Accumulate value in base 256 (binary)
                 value = value* 256 + data[byte_nbr++];
@@ -63,7 +63,7 @@ namespace NetMQ
         /// <exception cref="ArgumentException">If key in invalid</exception>
         byte[] Z85Decode(string key)
         {
-            UInt32 byte_nbr = 0;
+            //UInt32 byte_nbr = 0;
             UInt32 char_nbr = 0;
             UInt32 value = 0;
             var dest_ = new List<byte>();
@@ -255,7 +255,7 @@ namespace NetMQ
         /// <summary>
         /// Curve Public key 
         /// </summary>
-        public string SecretKeyZ85 => SecretKey != null ? Z85Encode(SecretKey) : null;
+        public string? SecretKeyZ85 => SecretKey != null ? Z85Encode(SecretKey) : null;
 
 
         /// <summary>

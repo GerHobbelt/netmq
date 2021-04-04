@@ -33,12 +33,17 @@ namespace NetMQ.Core.Transports
 
         private void SizeReady()
         {
-            // this assumption is now deprecated.
-            //Assumes.NotNull(m_inProgress.UnsafeData);
-
-            // Write message body into the buffer.
-            NextStep(new ByteArraySegment(m_inProgress.UnsafeData, m_inProgress.UnsafeOffset),
-                m_inProgress.Size, MessageReadyState, true);
+            if (m_inProgress.UnsafeData != null)
+            {
+                // Write message body into the buffer.
+                NextStep(new ByteArraySegment(m_inProgress.UnsafeData, m_inProgress.UnsafeOffset),
+                    m_inProgress.Size, MessageReadyState, true);
+            }
+            else
+            {
+                Assumes.Equals(m_inProgress.Size, 0);
+                NextStep(null, m_inProgress.Size, MessageReadyState, true);
+            }
         }
 
         private void MessageReady()

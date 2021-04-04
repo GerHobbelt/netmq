@@ -128,6 +128,8 @@ namespace NetMQ.Core.Transports.Tcp
             {
                 m_handle = AsyncSocket.Create(m_address.Address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
+                Assumes.NotNull(m_handle);
+
                 if (!m_options.IPv4Only && m_address.Address.AddressFamily == AddressFamily.InterNetworkV6)
                 {
                     try

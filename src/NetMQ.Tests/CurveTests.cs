@@ -35,8 +35,6 @@ namespace NetMQ.Tests
                 var world = client.ReceiveFrameString();
                 Assert.Equal("World", world);
             }
-            
-            
         }
 
 #if NET47_OR_GREATER
@@ -94,7 +92,6 @@ namespace NetMQ.Tests
                 Assert.Equal("Hello", frame.ReadString());
             }
         }
-
 #endif
     }
 }

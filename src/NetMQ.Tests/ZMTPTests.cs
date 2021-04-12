@@ -176,7 +176,6 @@ namespace NetMQ.Tests
                 Assert.Equal("Hello", frame.ReadString());
             }
         }
-
 #endif
     }
 }

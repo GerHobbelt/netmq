@@ -5,7 +5,6 @@
     <AssemblyVersion>$(PackageVersion)</AssemblyVersion>
     <Version>$(PackageVersion)</Version>
     <TargetFramework>net48</TargetFramework>
-    <TargetFrameworks>net45;net47;netstandard2.0;netstandard2.1</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyOriginatorKeyFile>./NetMQ.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
@@ -63,6 +62,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="JetBrains.Annotations" Version="2020.3.0" />
+    <PackageReference Update="JetBrains.Annotations" Version="2021.1.0" />
   </ItemGroup>
 </Project>

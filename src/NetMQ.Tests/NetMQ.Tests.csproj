@@ -50,11 +50,13 @@
   </ItemGroup>
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="ZeroMQ" Version="4.1.0.31" />
+    <PackageReference Include="ZeroMQ" Version="4.1.0.31">
+      <Aliases>ZeroMQPackageDLL</Aliases>
+    </PackageReference>
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Update="JetBrains.Annotations" Version="2020.3.0" />
+    <PackageReference Update="JetBrains.Annotations" Version="2021.1.0" />
   </ItemGroup>
 
 </Project>

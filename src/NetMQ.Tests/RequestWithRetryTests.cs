@@ -1,6 +1,8 @@
 ﻿#if !NET35
 using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using NetMQ.Sockets;
 using Xunit;
 
@@ -49,8 +51,8 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
-        public void RequestResponseMultipartMessageWithRetryFails()
+        [Fact(Timeout=5000)]
+        public async void RequestResponseMultipartMessageWithRetryFails()
         {
             const string address = "tcp://127.0.0.1:51002";
             const string pubAddress = "tcp://127.0.0.1:60002";
@@ -59,28 +61,44 @@ namespace NetMQ.Tests
             var requestMessage = new NetMQMessage(1);
             requestMessage.Append("Hi");
 
-            using (var progressPublisher = new PublisherSocket(pubAddress))
-            using (var progressSubscriber = new SubscriberSocket(pubAddress))
-            using (var server = new RouterSocket(address))
+            // keep the test from blocking when something goes wrong.
+            var timeout = new CancellationTokenSource(5000).Token;
+            Exception? e = null;
+
+            await Task.Run(() =>
             {
-                progressSubscriber.SubscribeToAnyTopic();
-                var progressProactor = new NetMQProactor(progressSubscriber, (socket, message) =>
-                    Debug.WriteLine("C: {0} {1:ss.fff}", message[0].ConvertToString(), DateTime.Now));
-
-                var serverProactor = new NetMQProactor(server, (socket, message) =>
+                try
                 {
-                    Debug.WriteLine("ResponseEcho received message {0} at {1:ss.fff}", message[2].ConvertToString(),
-                        DateTime.Now);
-                });
+                    using (var progressPublisher = new PublisherSocket(pubAddress))
+                    using (var progressSubscriber = new SubscriberSocket(pubAddress))
+                    using (var server = new RouterSocket(address))
+                    {
+                        progressSubscriber.SubscribeToAnyTopic();
+                        var progressProactor = new NetMQProactor(progressSubscriber, (socket, message) =>
+                            Debug.WriteLine("C: {0} {1:ss.fff}", message[0].ConvertToString(), DateTime.Now));
 
-                using (serverProactor)
-                using (progressProactor)
-                {
-                    var responseMessage = RequestSocket.RequestResponseMultipartMessageWithRetry(address, requestMessage,
-                        numTries, requestTimeout, progressPublisher);
-                    Assert.Null(responseMessage);
+                        var serverProactor = new NetMQProactor(server, (socket, message) =>
+                        {
+                            Debug.WriteLine("ResponseEcho received message {0} at {1:ss.fff}", message[2].ConvertToString(),
+                                DateTime.Now);
+                        });
+
+                        using (serverProactor)
+                        using (progressProactor)
+                        {
+                            var responseMessage = RequestSocket.RequestResponseMultipartMessageWithRetry(address, requestMessage,
+                                numTries, requestTimeout, progressPublisher);
+                            Assert.Null(responseMessage);
+                        }
+                    }
                 }
-            }
+                catch (Exception ex)
+                {
+                    e = ex;
+                }
+            }, timeout);
+
+            Assert.Null(e);
         }
 
         [Fact]
@@ -162,46 +180,62 @@ namespace NetMQ.Tests
             }
         }
 
-        [Fact]
-        public void RequestResponseStringWithRetrySucceedsNotOnFirstTry()
+        [Fact(Timeout=5000)]
+        public async void RequestResponseStringWithRetrySucceedsNotOnFirstTry()
         {
             const string address = "tcp://127.0.0.1:51005";
             const string pubAddress = "tcp://127.0.0.1:60005";
             const int numTries = 5;
             var requestTimeout = TimeSpan.FromMilliseconds(100);
 
-            using (var progressPublisher = new PublisherSocket(pubAddress))
-            using (var progressSubscriber = new SubscriberSocket(pubAddress))
-            using (var server = new RouterSocket(address))
+            // keep the test from blocking when something goes wrong.
+            var timeout = new CancellationTokenSource(5000).Token;
+            Exception? e = null;
+
+            await Task.Run(() =>
             {
-                progressSubscriber.SubscribeToAnyTopic();
-                var progressProactor = new NetMQProactor(progressSubscriber, (socket, message) =>
-                    Debug.WriteLine("C: {0} {1:ss.fff}", message[0].ConvertToString(), DateTime.Now));
-
-                int attempt = 0;
-
-                var serverProactor = new NetMQProactor(server, (socket, message) =>
+                try
                 {
-                    Debug.WriteLine("ResponseEcho received message {0} at {1:ss.fff}", message[2].ConvertToString(),
-                        DateTime.Now);
-
-                    attempt++;
-
-                    if (attempt > 1)
+                    using (var progressPublisher = new PublisherSocket(pubAddress))
+                    using (var progressSubscriber = new SubscriberSocket(pubAddress))
+                    using (var server = new RouterSocket(address))
                     {
-                        // reply same message
-                        socket.SendMultipartMessage(message);
-                    }
-                });
+                        progressSubscriber.SubscribeToAnyTopic();
+                        var progressProactor = new NetMQProactor(progressSubscriber, (socket, message) =>
+                            Debug.WriteLine("C: {0} {1:ss.fff}", message[0].ConvertToString(), DateTime.Now));
 
-                using (serverProactor)
-                using (progressProactor)
-                {
-                    var responseMessage = RequestSocket.RequestResponseStringWithRetry(address,
-                        "Hi", numTries, requestTimeout, progressPublisher);
-                    Assert.Equal("Hi", responseMessage);
+                        int attempt = 0;
+
+                        var serverProactor = new NetMQProactor(server, (socket, message) =>
+                        {
+                            Debug.WriteLine("ResponseEcho received message {0} at {1:ss.fff}", message[2].ConvertToString(),
+                                DateTime.Now);
+
+                            attempt++;
+
+                            if (attempt > 1)
+                            {
+                                // reply same message
+                                socket.SendMultipartMessage(message);
+                            }
+                        });
+
+                        using (serverProactor)
+                        using (progressProactor)
+                        {
+                            var responseMessage = RequestSocket.RequestResponseStringWithRetry(address,
+                                "Hi", numTries, requestTimeout, progressPublisher);
+                            Assert.Equal("Hi", responseMessage);
+                        }
+                    }
                 }
-            }
+                catch (Exception ex)
+                {
+                    e = ex;
+                }
+            }, timeout);
+
+            Assert.Null(e);
         }
     }
 }

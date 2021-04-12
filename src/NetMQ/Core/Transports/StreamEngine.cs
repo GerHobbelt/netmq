@@ -889,25 +889,24 @@ namespace NetMQ.Core.Transports
                                     if (m_options.Mechanism == MechanismType.Null
                                         && ByteArrayUtility.AreEqual(m_greeting, 12, NullMechanismBytes, 0, 20))
                                     {
-                                        Console.WriteLine("MECHANISM is Null");
                                         m_mechanism = new NullMechanism(m_session, m_options);
-                                    } else if (m_options.Mechanism == MechanismType.Plain
+                                    } 
+									else if (m_options.Mechanism == MechanismType.Plain
                                             && ByteArrayUtility.AreEqual(m_greeting, 12, PlainMechanismBytes, 0, 20))
                                     {
-                                        Console.WriteLine("MECHANISM is PLAIN");
-
+                                        Error(); // Not yet supported
                                         if (m_options.AsServer)
                                         {
-
                                             m_mechanism = new PlainServerMechanism(m_session, m_options);
                                         }
                                         else
+										{
                                             m_mechanism = new PlainClientMechanism(m_session, m_options);
+										}
                                     }
                                     else if (m_options.Mechanism == MechanismType.Curve
                                              && ByteArrayUtility.AreEqual(m_greeting, 12, CurveMechanismBytes, 0, 20))
                                     {
-                                        Console.WriteLine("MECHANISM is Curve");
                                         if (m_options.AsServer)
                                             m_mechanism = new CurveServerMechanism(m_session, m_options);
                                         else
@@ -916,7 +915,6 @@ namespace NetMQ.Core.Transports
                                     else
                                     {
                                         // Unsupported mechanism
-                                        Console.WriteLine("MECHANISM is not supported");
                                         Error();
                                         return;
                                     }
@@ -947,8 +945,6 @@ namespace NetMQ.Core.Transports
         {
             // Handshaking was successful.
             // Switch into the normal message flow.
-            Console.WriteLine("Handshake was successful!\n");
-
             m_state = State.Active;
 
             m_outsize = 0;
@@ -1164,7 +1160,6 @@ namespace NetMQ.Core.Transports
 
         PullMsgResult NextHandshakeCommand (ref Msg msg)
         {
-            // Console.WriteLine("Creating next Handshake command with status: " + m_mechanism.Status);
             if (m_mechanism.Status == MechanismStatus.Ready) 
             {
                 MechanismReady();
@@ -1172,7 +1167,6 @@ namespace NetMQ.Core.Transports
             }
             else if (m_mechanism.Status == MechanismStatus.Error) 
             {
-                Console.WriteLine("---- Result was ERROR ---- 1");
                 return PullMsgResult.Error;
             } 
             else 
@@ -1187,7 +1181,6 @@ namespace NetMQ.Core.Transports
 
         PushMsgResult ProcessHandshakeCommand (ref Msg msg)
         {
-            // Console.WriteLine("Processing Handshake command with status: " + m_mechanism.Status);
             var result = m_mechanism.ProcessHandshakeCommand(ref msg);
             if (result == PushMsgResult.Ok) 
             {

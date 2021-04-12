@@ -494,7 +494,6 @@ namespace NetMQ.Core
                     Mechanism = AsServer? MechanismType.Plain: MechanismType.Null;
                     break;
 
-
                 case ZmqSocketOption.PlainUsername:
                     Console.WriteLine("Setting Username");
                     PlainUsername = Get<string>();

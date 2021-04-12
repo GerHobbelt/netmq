@@ -337,10 +337,7 @@ namespace NetMQ.Core
         /// </summary>
         HelloMessage = 57,
 
-
-
         Correlate = 58, // in zmq it's 52 and 53, but I guess it does not matter so long as it is unique.
-
 
         Relaxed = 59,
 
@@ -353,8 +350,6 @@ namespace NetMQ.Core
         /// Password for plain authentication
         /// </summary>
         PlainPassword = 61,
-
-
 
         /// <summary>
         /// Act as plain authentication server

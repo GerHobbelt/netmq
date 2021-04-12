@@ -109,7 +109,7 @@ namespace NetMQ.Core.Utils
         {
             int timeoutInMicroSeconds = (timeout >= 0)
                 ? timeout * 1000
-                : Timeout.Infinite;
+                : 60 * 1000 * 1000 /* Timeout.Infinite */ ;
 
             if (m_readSocket.Connected)
                 return m_readSocket.Poll(timeoutInMicroSeconds, SelectMode.SelectRead);

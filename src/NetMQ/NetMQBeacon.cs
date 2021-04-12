@@ -271,7 +271,9 @@ namespace NetMQ
                 }
                 catch (SocketException ex)
                 {
-                    if (ex.SocketErrorCode != SocketError.AddressNotAvailable) { throw; }
+                    if ((ex.SocketErrorCode != SocketError.AddressNotAvailable) &&
+                        (ex.SocketErrorCode != SocketError.HostUnreachable))
+                        { throw; }
 
                     // Initiate Creation of new Udp here to solve issue related to 'sudden' network change.
                     // On windows (7 OR 10) incorrect/previous ip address might still exist instead of new Ip

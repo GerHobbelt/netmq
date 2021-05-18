@@ -272,7 +272,8 @@ namespace NetMQ
                 catch (SocketException ex)
                 {
                     if ((ex.SocketErrorCode != SocketError.AddressNotAvailable) &&
-                        (ex.SocketErrorCode != SocketError.HostUnreachable))
+                        (ex.SocketErrorCode != SocketError.HostUnreachable) &&
+                        (ex.SocketErrorCode != SocketError.NetworkUnreachable))
                         { throw; }
 
                     // Initiate Creation of new Udp here to solve issue related to 'sudden' network change.
